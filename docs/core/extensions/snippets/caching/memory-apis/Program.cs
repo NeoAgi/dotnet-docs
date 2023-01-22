@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-IHost host = Host.CreateDefaultBuilder(args)
+using IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services => services.AddMemoryCache())
     .Build();
 
@@ -13,7 +13,7 @@ const int MillisecondsDelayAfterAdd = 50;
 const int MillisecondsAbsoluteExpiration = 750;
 
 static void OnPostEviction(
-    object key, object letter, EvictionReason reason, object state)
+    object key, object? letter, EvictionReason reason, object? state)
 {
     if (letter is AlphabetLetter alphabetLetter)
     {
@@ -32,7 +32,7 @@ static async ValueTask IterateAlphabetAsync(
     Console.WriteLine();
 }
 
-await IterateAlphabetAsync(letter =>
+var addLettersToCacheTask = IterateAlphabetAsync(letter =>
 {
     MemoryCacheEntryOptions options = new()
     {
@@ -51,8 +51,9 @@ await IterateAlphabetAsync(letter =>
     return Task.Delay(
         TimeSpan.FromMilliseconds(MillisecondsDelayAfterAdd));
 });
+await addLettersToCacheTask;
 
-await IterateAlphabetAsync(letter =>
+var readLettersFromCacheTask = IterateAlphabetAsync(letter =>
 {
     if (cache.TryGetValue(letter, out object? value) &&
         value is AlphabetLetter alphabetLetter)
@@ -62,10 +63,11 @@ await IterateAlphabetAsync(letter =>
 
     return Task.CompletedTask;
 });
+await readLettersFromCacheTask;
 
 await host.RunAsync();
 
-record AlphabetLetter(char Letter)
+file record AlphabetLetter(char Letter)
 {
     internal string Message =>
         $"The '{Letter}' character is the {Letter - 64} letter in the English alphabet.";

@@ -10,7 +10,7 @@ Some APIs have been marked as obsolete, starting in .NET 5. This breaking change
 
 ## Change description
 
-In previous .NET versions, these APIs can be used without any build warning. In .NET 5 and later versions, use of these APIS produces a compile-time warning or error with a custom diagnostic ID. The use of custom diagnostic IDs allows you to suppress the obsoletion warnings individually instead of blanket-suppressing all obsoletion warnings.
+In previous .NET versions, these APIs can be used without any build warning. In .NET 5 and later versions, use of these APIs produces a compile-time warning or error with a custom diagnostic ID. The use of custom diagnostic IDs allows you to suppress the obsoletion warnings individually instead of blanket-suppressing all obsoletion warnings.
 
 The following table lists the custom diagnostic IDs and their corresponding warning messages for obsoleted APIs.
 
@@ -284,4 +284,5 @@ Classes and members that depend on code access security types:
 ## See also
 
 - [API obsoletions with non-default diagnostic IDs (.NET 6)](../6.0/obsolete-apis-with-custom-diagnostics.md)
+- [API obsoletions with non-default diagnostic IDs (.NET 7)](../7.0/obsolete-apis-with-custom-diagnostics.md)
 - [Obsolete features in .NET 5+](../../../../fundamentals/syslib-diagnostics/obsoletions-overview.md)

@@ -45,7 +45,7 @@ The formula is based on the mean temperature on a given day and a baseline tempe
 
 :::code language="csharp" source="snippets/record-types/InterimSteps.cs" ID="DailyRecord":::
 
-The preceding code defines a *positional record*. The `DailyTemperature` record is a `readonly record struct`, because you don't intend to inherit from it, and it should be immutable. The `HighTemp` and `LowTemp` properties are *init only properties*, meaning they can be set in the constructor or using a property initializer. If you wanted the positional parameters to be read-write, you declare a `record struct` instead of a `readonly record struct`. The `DailyTemperature` type also has a *primary constructor* that has two parameters that match the two properties. You use the primary constructor to initialize a `DailyTemperature` record:
+The preceding code defines a *positional record*. The `DailyTemperature` record is a `readonly record struct`, because you don't intend to inherit from it, and it should be immutable. The `HighTemp` and `LowTemp` properties are *init only properties*, meaning they can be set in the constructor or using a property initializer. If you wanted the positional parameters to be read-write, you declare a `record struct` instead of a `readonly record struct`. The `DailyTemperature` type also has a *primary constructor* that has two parameters that match the two properties. You use the primary constructor to initialize a `DailyTemperature` record. The following code creates and initializes several `DailyTemperature` records. The first uses named parameters to clarify the `HighTemp` and `LowTemp`. The remaining initializers use positional parameters to initialize the `HighTemp` and `LowTemp`:
 
 :::code language="csharp" source="snippets/record-types/Program.cs" ID="DeclareData":::
 
@@ -125,7 +125,7 @@ You declare a `PrintMembers` method in the `DegreeDays` record that doesn't prin
 
 The signature declares a `virtual protected` method to match the compiler's version. Don't worry if you get the accessors wrong; the language enforces the correct signature. If you forget the correct modifiers for any synthesized method, the compiler issues warnings or errors that help you get the right signature.
 
-In C# 10 and later, you can declare the `ToString` method as `sealed` in a record type. That prevents derived records from providing a new implementation. Derived records will still contain the `PrintMembers` override. You would do seal `ToString` if you didn't want it to display the runtime type of the record. In the preceding example, you'd lose the information on where the record was measuring heating or cooling degree days.
+In C# 10 and later, you can declare the `ToString` method as `sealed` in a record type. That prevents derived records from providing a new implementation. Derived records will still contain the `PrintMembers` override. You would seal `ToString` if you didn't want it to display the runtime type of the record. In the preceding example, you'd lose the information on where the record was measuring heating or cooling degree days.
 
 ## Non-destructive mutation
 

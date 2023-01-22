@@ -35,7 +35,7 @@ dotnet add package System.Diagnostics.DiagnosticSource
 
 Replace the code of `Program.cs` with:
 
-```C#
+```csharp
 using System;
 using System.Diagnostics.Metrics;
 using System.Threading;
@@ -43,7 +43,7 @@ using System.Threading;
 class Program
 {
     static Meter s_meter = new Meter("HatCo.HatStore", "1.0.0");
-    static Counter<int> s_hatsSold = s_meter.CreateCounter<int>("hats-sold"); 
+    static Counter<int> s_hatsSold = s_meter.CreateCounter<int>("hats-sold");
 
     static void Main(string[] args)
     {
@@ -164,7 +164,7 @@ dotnet add package OpenTelemetry.Exporter.Prometheus --version 1.2.0-beta1
 ```
 
 > [!NOTE]
-> The Promethus exporter library includes a reference to OpenTelemetry's shared library so this command implicitly adds both libraries
+> The Prometheus exporter library includes a reference to OpenTelemetry's shared library so this command implicitly adds both libraries
 > to the application.
 
 > [!NOTE]
@@ -173,7 +173,7 @@ dotnet add package OpenTelemetry.Exporter.Prometheus --version 1.2.0-beta1
 
 Modify the code of `Program.cs` so that it contains the extra code to configure OpenTelemetry at the beginning of Main():
 
-```C#
+```csharp
 using System;
 using System.Diagnostics.Metrics;
 using System.Threading;
@@ -183,9 +183,9 @@ using OpenTelemetry.Metrics;
 class Program
 {
     static Meter s_meter = new Meter("HatCo.HatStore", "1.0.0");
-    static Counter<int> s_hatsSold = s_meter.CreateCounter<int>(name: "hats-sold", 
+    static Counter<int> s_hatsSold = s_meter.CreateCounter<int>(name: "hats-sold",
                                                                 unit: "Hats",
-                                                                description: "The number of hats sold in our store"); 
+                                                                description: "The number of hats sold in our store");
 
     static void Main(string[] args)
     {
@@ -211,12 +211,12 @@ class Program
 
 `AddMeter("HatCo.HatStore")` configures OpenTelemetry to transmit all the metrics collected by the Meter our app defined.
 `AddPrometheusExporter(...)` configures OpenTelemetry to expose Prometheus' metrics endpoint on port 9184 and to use
-the HttpListener. See the [OpenTelemetry documentation](https://github.com/open-telemetry/opentelemetry-dotnet/tree/main/src/OpenTelemetry.Exporter.Prometheus)
+the HttpListener. See the [OpenTelemetry documentation](https://github.com/open-telemetry/opentelemetry-dotnet/tree/main/docs/metrics/getting-started-prometheus-grafana#collect-metrics-using-prometheus)
 for more information about OpenTelemetry configuration options, in particular, alternative hosting options that are useful for ASP.NET applications.
 
 > [!NOTE]
-> At the time of writing OpenTelemetry only supports metrics emitted using the <xref:System.Diagnostics.Metrics?displayProperty=nameWithType>
-> APIs; however, support for [EventCounters](event-counters.md) is planned.
+> At the time of writing, OpenTelemetry only supports metrics emitted using the <xref:System.Diagnostics.Metrics?displayProperty=nameWithType>
+> APIs. However, support for [EventCounters](event-counters.md) is planned.
 
 Run the example app and leave it running in the background.
 
@@ -292,7 +292,7 @@ logic compatible with the older EventCounters instrumentation, see [EventCounter
 
 Modify the code of `Program.cs` to use <xref:System.Diagnostics.Metrics.MeterListener> like this:
 
-```C#
+```csharp
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
@@ -301,9 +301,9 @@ using System.Threading;
 class Program
 {
     static Meter s_meter = new Meter("HatCo.HatStore", "1.0.0");
-    static Counter<int> s_hatsSold = s_meter.CreateCounter<int>(name: "hats-sold", 
+    static Counter<int> s_hatsSold = s_meter.CreateCounter<int>(name: "hats-sold",
                                                                 unit: "Hats",
-                                                                description: "The number of hats sold in our store"); 
+                                                                description: "The number of hats sold in our store");
 
     static void Main(string[] args)
     {
@@ -348,13 +348,13 @@ hats-sold recorded measurement 4
 
 Let's break down what happens in the example above.
 
-```C#
+```csharp
 using MeterListener meterListener = new MeterListener();
 ```
 
 First we created an instance of the <xref:System.Diagnostics.Metrics.MeterListener>, which we will use to receive measurements.
 
-```C#
+```csharp
 meterListener.InstrumentPublished = (instrument, listener) =>
 {
     if(instrument.Meter.Name == "HatCo.HatStore")
@@ -372,7 +372,7 @@ public property to decide whether to subscribe. If we do want to receive measure
 to obtain a reference to an instrument, it's legal to invoke `EnableMeasurementEvents()` at any time with that reference, but this is
 probably uncommon.
 
-```C#
+```csharp
 meterListener.SetMeasurementEventCallback<int>(OnMeasurementRecorded);
 ...
 static void OnMeasurementRecorded<T>(Instrument instrument, T measurement, ReadOnlySpan<KeyValuePair<string,object>> tags, object state)
@@ -397,7 +397,7 @@ store measurements in memory and have code to do calculations on those measureme
 that maps from the instrument to the storage object and look it up on every measurement, that would be much slower than
 accessing it from `state`.
 
-```C#
+```csharp
 meterListener.Start();
 ```
 
@@ -405,7 +405,7 @@ Once the `MeterListener` is configured, we need to start it to trigger callbacks
 delegate will be invoked for every pre-existing Instrument in the process. In the future, any newly created Instrument
 will also trigger `InstrumentPublished` to be invoked.
 
-```C#
+```csharp
 using MeterListener meterListener = new MeterListener();
 ```
 

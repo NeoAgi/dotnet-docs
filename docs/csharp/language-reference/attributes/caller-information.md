@@ -1,10 +1,10 @@
 ---
-title: "C# Reserved attributes: Tracking caller information"
+title: "Attributes interpreted by the C# compiler: Tracking caller information"
 ms.date: 11/02/2021
 description: These attributes instruct the compiler to generate information about the code that calls a member. You use the CallerFilePath, CallerLineNumber, CallerMemberName, and CallerArgumentExpression to provide detailed trace information
 ---
 
-# Reserved attributes: Determine caller information
+# Determine caller information using attributes interpreted by the C# compiler
 
 Using info attributes, you obtain information about the caller to a method. You obtain the file path of the source code, the line number in the source code, and the member name of the caller. To obtain member caller information, you use attributes that are applied to optional parameters. Each optional parameter specifies a default value. The following table lists the Caller Info attributes that are defined in the <xref:System.Runtime.CompilerServices?displayProperty=nameWithType> namespace:
 
@@ -62,7 +62,7 @@ This attribute enables you to write diagnostic utilities that provide more detai
 
 :::code language="csharp" source="./snippets/CallerInformation.cs" id="ExtensionMethod":::
 
-You could call this method as follows:
+The previous example uses the [`nameof`](../operators/nameof.md) operator for the parameter `sequence`. That feature is available in C# 11. Before C# 11, you'll need to type the name of the parameter as a string. You could call this method as follows:
 
 :::code language="csharp" source="./snippets/Program.cs" id="ShortSequence":::
 

@@ -1,9 +1,9 @@
 ---
-title: Worker Services in .NET
+title: Worker Services
 description: Learn how to implement a custom IHostedService and use existing implementations with .NET.
 author: IEvangelist
 ms.author: dapine
-ms.date: 11/15/2021
+ms.date: 07/20/2022
 ms.topic: overview
 ---
 
@@ -11,13 +11,15 @@ ms.topic: overview
 
 There are numerous reasons for creating long-running services such as:
 
-- Processing CPU intensive data.
+- Processing CPU-intensive data.
 - Queuing work items in the background.
 - Performing a time-based operation on a schedule.
 
-Background service processing usually doesn't involve a user interface (UI), but UIs can be built around them. In the early days with .NET Framework, Windows developers could create Windows Services for these reasons. Now with .NET, you can use the <xref:Microsoft.Extensions.Hosting.BackgroundService> &mdash; which is an implementation of <xref:Microsoft.Extensions.Hosting.IHostedService>, or implement your own.
+Background service processing usually doesn't involve a user interface (UI), but UIs can be built around them. In the early days with .NET Framework, Windows developers could create Windows Services for these reasons. Now with .NET, you can use the <xref:Microsoft.Extensions.Hosting.BackgroundService>, which is an implementation of <xref:Microsoft.Extensions.Hosting.IHostedService>, or implement your own.
 
 With .NET, you're no longer restricted to Windows. You can develop cross-platform background services. Hosted services are logging, configuration, and dependency injection (DI) ready. They're a part of the extensions suite of libraries, meaning they're fundamental to all .NET workloads that work with the [generic host](generic-host.md).
+
+[!INCLUDE [worker-template-workloads](includes/worker-template-workloads.md)]
 
 ## Terminology
 
@@ -41,6 +43,17 @@ The preceding `Program` class:
 - Calls <xref:Microsoft.Extensions.Hosting.HostBuilder.ConfigureServices%2A> to add the `Worker` class as a hosted service with <xref:Microsoft.Extensions.DependencyInjection.ServiceCollectionHostedServiceExtensions.AddHostedService%2A>.
 - Builds an <xref:Microsoft.Extensions.Hosting.IHost> from the builder.
 - Calls `Run` on the `host` instance, which runs the app.
+
+> [!TIP]
+> By default the Worker Service template doesn't enable server garbage collection (GC). All of the scenarios that require long-running services should consider performance implications of this default. To enable server GC, add the `ServerGarbageCollection` node to the project file:
+>
+> ```xml
+> <PropertyGroup>
+>      <ServerGarbageCollection>true</ServerGarbageCollection>
+> </PropertyGroup>
+> ```
+>
+> For more information regarding performance considerations, see [Server GC](../../standard/garbage-collection/workstation-server-gc.md#server-gc). For more information on configuring server GC, see [Server GC configuration examples](../runtime-config/garbage-collector.md#workstation-vs-server).
 
 The *Program.cs* file from the template can be rewritten using top-level statements:
 
@@ -81,7 +94,7 @@ For more information, see [.NET project SDKs](../project-sdk/overview.md).
 
 An app based on the Worker Service template uses the `Microsoft.NET.Sdk.Worker` SDK and has an explicit package reference to the [Microsoft.Extensions.Hosting](https://www.nuget.org/packages/Microsoft.Extensions.Hosting) package.
 
-### Containers and cloud adoptability
+### Containers and cloud adaptability
 
 With most modern .NET workloads, containers are a viable option. When creating a long-running service from the Worker Service template in Visual Studio, you can opt-in to **Docker support**. Doing so will create a *Dockerfile* that will containerize your .NET app. A [*Dockerfile*](https://docs.docker.com/engine/reference/builder) is a set of instructions to build an image. For .NET apps, the *Dockerfile* usually sits in the root of the directory next to a solution file.
 
@@ -89,13 +102,13 @@ With most modern .NET workloads, containers are a viable option. When creating a
 
 The preceding *Dockerfile* steps include:
 
-- Setting the base image from `mcr.microsoft.com/dotnet/runtime:5.0` as the alias `base`.
+- Setting the base image from `mcr.microsoft.com/dotnet/runtime:6.0` as the alias `base`.
 - Changing the working directory to */app*.
-- Setting the `build` alias from the `mcr.microsoft.com/dotnet/sdk:5.0` image.
+- Setting the `build` alias from the `mcr.microsoft.com/dotnet/sdk:6.0` image.
 - Changing the working directory to */src*.
 - Copying the contents and publishing the .NET app:
   - The app is published using the [`dotnet publish`](../tools/dotnet-publish.md) command.
-- Relayering the .NET SDK image from `mcr.microsoft.com/dotnet/runtime:5.0` (the `base` alias).
+- Relayering the .NET SDK image from `mcr.microsoft.com/dotnet/runtime:6.0` (the `base` alias).
 - Copying the published build output from the */publish*.
 - Defining the entry point, which delegates to [`dotnet App.BackgroundService.dll`](../tools/dotnet.md).
 
@@ -110,6 +123,9 @@ In the preceding project file, the `<DockerDefaultTargetOS>` element specifies `
 
 For more information on Docker with .NET, see [Tutorial: Containerize a .NET app](../docker/build-container.md). For more information on deploying to Azure, see [Tutorial: Deploy a Worker Service to Azure](cloud-service.md).
 
+> [!IMPORTANT]
+> If you want to leverage _User Secrets_ with the Worker Service template, you'd have to explicitly reference the `Microsoft.Extensions.Configuration.UserSecrets` NuGet package.
+
 ## Hosted Service extensibility
 
 The <xref:Microsoft.Extensions.Hosting.IHostedService> interface defines two methods:
@@ -119,8 +135,28 @@ The <xref:Microsoft.Extensions.Hosting.IHostedService> interface defines two met
 
 These two methods serve as *lifecycle* methods - they're called during host start and stop events respectively.
 
+> [!NOTE]
+> When overriding either <xref:Microsoft.Extensions.Hosting.BackgroundService.StartAsync%2A> or <xref:Microsoft.Extensions.Hosting.BackgroundService.StopAsync%2A> methods, you must call and `await` the `base` class method to ensure the service starts and/or shuts down properly.
+
 > [!IMPORTANT]
 > The interface serves as a generic-type parameter constraint on the <xref:Microsoft.Extensions.DependencyInjection.ServiceCollectionHostedServiceExtensions.AddHostedService%60%601(Microsoft.Extensions.DependencyInjection.IServiceCollection)> extension method, meaning only implementations are permitted. You're free to use the provided <xref:Microsoft.Extensions.Hosting.BackgroundService> with a subclass, or implement your own entirely.
+
+## Signal completion
+
+In most common scenarios, you do not need to explicitly signal the completion of a hosted service. When the host starts the services, they're designed to run until the host is stopped. In some scenarios, however, you may need to signal the completion of the entire host application when the service completes. To achieve this, consider the following `Worker` class:
+
+:::code source="snippets/workers/signal-completion-service/App.SignalCompletionService/Worker.cs":::
+
+In the preceding code, the `ExecuteAsync` method doesn't loop, and when it's complete it calls <xref:Microsoft.Extensions.Hosting.IHostApplicationLifetime.StopApplication?displayProperty=nameWithType>.
+
+> [!IMPORTANT]
+> This will signal to the host that it should stop, and without this call to `StopApplication` the host will continue to run indefinitely.
+
+For more information, see:
+
+- [.NET Generic Host: IHostApplicationLifetime](generic-host.md#ihostapplicationlifetime)
+- [.NET Generic Host: Host shutdown](generic-host.md#host-shutdown)
+- [.NET Generic Host: Hosting shutdown process](generic-host.md#hosting-shutdown-process)
 
 ## See also
 

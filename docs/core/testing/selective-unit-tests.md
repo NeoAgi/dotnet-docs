@@ -44,7 +44,7 @@ dotnet test --filter <Expression>
 
 ## Character escaping
 
-To use an exclamation mark (`!`) in a filter expression on Linux or macOS, escape it by putting a backslash in front of it (`\!`). For example, the following filter skips all tests in a namespace that contains `IntegrationTests`:
+To use an exclamation mark (`!`) in a filter expression, you have to escape it in some Linux or macOS shells by putting a backslash in front of it (`\!`). For example, the following filter skips all tests in a namespace that contains `IntegrationTests`:
 
 ```dotnetcli
 dotnet test --filter FullyQualifiedName\!~IntegrationTests
@@ -222,7 +222,7 @@ To run tests that have either a <xref:System.Reflection.Module.FullyQualifiedNam
 dotnet test --filter "(FullyQualifiedName~UnitTest1&TestCategory=CategoryA)|Priority=1"
 ```
 
-For more information, see [TestCase filter](https://github.com/Microsoft/vstest-docs/blob/master/docs/filter.md).
+For more information, see [TestCase filter](https://github.com/Microsoft/vstest-docs/blob/main/docs/filter.md).
 
 :::zone-end
 

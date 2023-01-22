@@ -1,7 +1,7 @@
 ---
 title: The Task Asynchronous Programming (TAP) model with async and await (C#)"
 description: Learn when and how to use Task-based async programming, a simplified approach to asynchronous programming in C#.
-ms.date: 08/19/2020
+ms.date: 03/02/2022
 ms.assetid: 9bcf896a-5826-4189-8c1a-3e35fa08243a
 ---
 
@@ -9,7 +9,7 @@ ms.assetid: 9bcf896a-5826-4189-8c1a-3e35fa08243a
 
 You can avoid performance bottlenecks and enhance the overall responsiveness of your application by using asynchronous programming. However, traditional techniques for writing asynchronous applications can be complicated, making them difficult to write, debug, and maintain.
 
-[C# 5](../../../whats-new/csharp-version-history.md#c-version-50) introduced a simplified approach, async programming, that leverages asynchronous support in the .NET Framework 4.5 and higher, .NET Core, and the Windows Runtime. The compiler does the difficult work that the developer used to do, and your application retains a logical structure that resembles synchronous code. As a result, you get all the advantages of asynchronous programming with a fraction of the effort.
+C# supports simplified approach, async programming, that leverages asynchronous support in the .NET runtime. The compiler does the difficult work that the developer used to do, and your application retains a logical structure that resembles synchronous code. As a result, you get all the advantages of asynchronous programming with a fraction of the effort.
 
 This topic provides an overview of when and how to use async programming and includes links to support topics that contain details and examples.
 
@@ -56,7 +56,7 @@ The return statement specifies an integer result. Any methods that are awaiting 
 If `GetUrlContentLengthAsync` doesn't have any work that it can do between calling `GetStringAsync` and awaiting its completion, you can simplify your code by calling and awaiting in the following single statement.
 
 ```csharp
-string contents = await client.GetStringAsync("https://docs.microsoft.com/dotnet");
+string contents = await client.GetStringAsync("https://learn.microsoft.com/dotnet");
 ```
 
 The following characteristics summarize what makes the previous example an async method:
@@ -68,7 +68,7 @@ The following characteristics summarize what makes the previous example an async
   - <xref:System.Threading.Tasks.Task%601> if your method has a return statement in which the operand has type `TResult`.
   - <xref:System.Threading.Tasks.Task> if your method has no return statement or has a return statement with no operand.
   - `void` if you're writing an async event handler.
-  - Any other type that has a `GetAwaiter` method (starting with C# 7.0).
+  - Any other type that has a `GetAwaiter` method.
 
   For more information, see the [Return types and parameters](#BKMK_ReturnTypesandParameters) section.
 
@@ -147,11 +147,11 @@ An async method typically contains one or more occurrences of an `await` operato
 
 An async method typically returns a <xref:System.Threading.Tasks.Task> or a <xref:System.Threading.Tasks.Task%601>. Inside an async method, an `await` operator is applied to a task that's returned from a call to another async method.
 
-You specify <xref:System.Threading.Tasks.Task%601> as the return type if the method contains a [`return`](../../../language-reference/keywords/return.md) statement that specifies an operand of type `TResult`.
+You specify <xref:System.Threading.Tasks.Task%601> as the return type if the method contains a [`return`](../../../language-reference/statements/jump-statements.md#the-return-statement) statement that specifies an operand of type `TResult`.
 
 You use <xref:System.Threading.Tasks.Task>  as the return type if the method has no return statement or has a return statement that doesn't return an operand.
 
-Starting with C# 7.0, you can also specify any other return type, provided that the type includes a `GetAwaiter` method. <xref:System.Threading.Tasks.ValueTask%601> is an example of such a type. It is available in the [System.Threading.Tasks.Extension](https://www.nuget.org/packages/System.Threading.Tasks.Extensions/) NuGet package.
+You can also specify any other return type, provided that the type includes a `GetAwaiter` method. <xref:System.Threading.Tasks.ValueTask%601> is an example of such a type. It is available in the [System.Threading.Tasks.Extension](https://www.nuget.org/packages/System.Threading.Tasks.Extensions/) NuGet package.
 
 The following example shows how you declare and call a method that returns a <xref:System.Threading.Tasks.Task%601> or a <xref:System.Threading.Tasks.Task>:
 
@@ -205,20 +205,19 @@ By convention, methods that return commonly awaitable types (for example, `Task`
 
 You can ignore the convention where an event, base class, or interface contract suggests a different name. For example, you shouldn't rename common event handlers, such as `OnButtonClick`.
 
-## <a name="BKMK_RelatedTopics"></a> Related topics and samples (Visual Studio)
+## <a name="BKMK_RelatedTopics"></a> Related articles (Visual Studio)
 
-| Title | Description | Sample |
-|--|--|--|
-| [How to make multiple web requests in parallel by using async and await (C#)](./index.md) | Demonstrates how to start several tasks at the same time. | [Async Sample: Make Multiple Web Requests in Parallel](https://code.msdn.microsoft.com/Async-Make-Multiple-Web-49adb82e) |
-| [Async return types (C#)](async-return-types.md) | Illustrates the types that async methods can return, and explains when each type is appropriate. |  |
-| Cancel tasks with a cancellation token as a signaling mechanism. | Shows how to add the following functionality to your async solution:<br><br> - [Cancel a list of tasks (C#)](cancel-an-async-task-or-a-list-of-tasks.md)<br>- [Cancel tasks after a period of time (C#)](cancel-async-tasks-after-a-period-of-time.md)<br>- [Process asynchronous task as they complete (C#)](start-multiple-async-tasks-and-process-them-as-they-complete.md) |  |
-| [Using async for file access (C#)](using-async-for-file-access.md) | Lists and demonstrates the benefits of using async and await to access files. |  |
-| [Task-based asynchronous pattern (TAP)](../../../../standard/asynchronous-programming-patterns/task-based-asynchronous-pattern-tap.md) | Describes an asynchronous pattern, the pattern is based on the <xref:System.Threading.Tasks.Task> and <xref:System.Threading.Tasks.Task%601> types. |  |
-| [Async Videos on Channel 9](https://channel9.msdn.com/search?term=async%20&type=All#pubDate=year&ch9Search&lang-en=en) | Provides links to a variety of videos about async programming. |  |
+| Title | Description |
+|--|--|
+| [How to make multiple web requests in parallel by using async and await (C#)](./index.md) | Demonstrates how to start several tasks at the same time. |
+| [Async return types (C#)](async-return-types.md) | Illustrates the types that async methods can return, and explains when each type is appropriate. |
+| Cancel tasks with a cancellation token as a signaling mechanism. | Shows how to add the following functionality to your async solution:<br><br> - [Cancel a list of tasks (C#)](cancel-an-async-task-or-a-list-of-tasks.md)<br>- [Cancel tasks after a period of time (C#)](cancel-async-tasks-after-a-period-of-time.md)<br>- [Process asynchronous task as they complete (C#)](start-multiple-async-tasks-and-process-them-as-they-complete.md) |
+| [Using async for file access (C#)](using-async-for-file-access.md) | Lists and demonstrates the benefits of using async and await to access files. |
+| [Task-based asynchronous pattern (TAP)](../../../../standard/asynchronous-programming-patterns/task-based-asynchronous-pattern-tap.md) | Describes an asynchronous pattern, the pattern is based on the <xref:System.Threading.Tasks.Task> and <xref:System.Threading.Tasks.Task%601> types. |
+| [Async Videos on Channel 9](/shows/browse?terms=async) | Provides links to a variety of videos about async programming. |
 
 ## See also
 
+- [Asynchronous programming with async and await](index.md)
 - [async](../../../language-reference/keywords/async.md)
 - [await](../../../language-reference/operators/await.md)
-- [Asynchronous programming](../../../async.md)
-- [Async overview](../../../../standard/async.md)

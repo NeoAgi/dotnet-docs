@@ -3,7 +3,7 @@ title: Create an item template for dotnet new - .NET CLI
 titleSuffix: ""
 description: Learn how to create an item template for the dotnet new command. Item templates can contain any number of files.
 author: adegeo
-ms.date: 12/11/2020
+ms.date: 02/03/2021
 ms.topic: tutorial
 ms.author: adegeo
 recommendations: false
@@ -12,6 +12,8 @@ recommendations: false
 # Tutorial: Create an item template
 
 With .NET, you can create and deploy templates that generate projects, files, even resources. This tutorial is part one of a series that teaches you how to create, install, and uninstall templates for use with the `dotnet new` command.
+
+You can view the completed template in the [.NET Samples GitHub repository](https://github.com/dotnet/samples/tree/main/core/tutorials/cli-templates-create-item-template).
 
 In this part of the series, you'll learn how to:
 
@@ -25,7 +27,7 @@ In this part of the series, you'll learn how to:
 
 ## Prerequisites
 
-* [.NET 5.0 SDK](https://dotnet.microsoft.com/download) or a later version.
+* [.NET SDK 7.0.100](https://dotnet.microsoft.com/download) or a later version.
 * Read the reference article [Custom templates for dotnet new](../tools/custom-templates.md).
 
   The reference article explains the basics about templates and how they're put together. Some of this information will be reiterated here.
@@ -119,8 +121,8 @@ The `classifications` item represents the **tags** column you see when you run `
 
 Now that you have a valid _.template.config/template.json_ file, your template is ready to be installed. In your terminal, navigate to the  _extensions_ folder and run the following command to install the template located at the current folder:
 
-* **On Windows**: `dotnet new --install .\`
-* **On Linux or macOS**: `dotnet new --install ./`
+* **On Windows**: `dotnet new install .\`
+* **On Linux or macOS**: `dotnet new install ./`
 
 This command outputs the list of templates installed, which should include yours.
 
@@ -200,10 +202,10 @@ Congratulations! You created and deployed an item template with .NET. In prepara
 
 ## Uninstall the template
 
-In your terminal, navigate to the  _extensions_ folder and run the following command to uninstall the template located at the current folder:
+In your terminal, navigate to the  _extensions_ folder and run the following command to uninstall the templates located at the current folder:
 
-* **On Windows**: `dotnet new --uninstall .\`
-* **On Linux or macOS**: `dotnet new --uninstall ./`
+* **On Windows**: `dotnet new uninstall .\`
+* **On Linux or macOS**: `dotnet new uninstall ./`
 
 This command outputs a list of the templates that were uninstalled, which should include yours.
 
@@ -211,7 +213,7 @@ This command outputs a list of the templates that were uninstalled, which should
 Success: <root path>\working\templates\extensions was uninstalled.
 ```
 
-At any time, you can use `dotnet new --uninstall` to see a list of installed template packages, including for each template package the command to uninstall it.
+At any time, you can use `dotnet new uninstall` to see a list of installed template packages, including for each template package the command to uninstall it.
 
 ## Next steps
 

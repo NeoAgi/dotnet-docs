@@ -1,18 +1,16 @@
 ---
-title: "new operator - C# reference"
-description: "Learn about the C# new operator that is used to create a new instance of a type."
-ms.date: 10/02/2020
+title: "new operator - Create and initialize a new instance of a type"
+description: "The C# new operator is used to create a optionally initialize a new instance of a type."
+ms.date: 11/28/2022
 f1_keywords:
  - new_CSharpKeyword
 helpviewer_keywords: 
   - "new operator keyword [C#]"
 ms.assetid: a212b697-a79b-4105-9923-1f7b108036e8
 ---
-# new operator (C# reference)
+# new operator - The `new` operator creates a new instance of a type
 
-The `new` operator creates a new instance of a type.
-
-You can also use the `new` keyword as a [member declaration modifier](../keywords/new-modifier.md) or a [generic type constraint](../keywords/new-constraint.md).
+The `new` operator creates a new instance of a type. You can also use the `new` keyword as a [member declaration modifier](../keywords/new-modifier.md) or a [generic type constraint](../keywords/new-constraint.md).
 
 ## Constructor invocation
 
@@ -30,7 +28,7 @@ Beginning with C# 9.0, constructor invocation expressions are target-typed. That
 
 As the preceding example shows, you always use parentheses in a target-typed `new` expression.
 
-If a target type of a `new` expression is unknown (for example, when you use the [`var`](../keywords/var.md) keyword), you must specify a type name.
+If a target type of a `new` expression is unknown (for example, when you use the [`var`](../statements/declarations.md#implicitly-typed-local-variables) keyword), you must specify a type name.
 
 ## Array creation
 
@@ -58,11 +56,11 @@ For type instances that contain unmanaged resources, for example, a file handle,
 
 ## Operator overloadability
 
-A user-defined type cannot overload the `new` operator.
+A user-defined type can't overload the `new` operator.
 
 ## C# language specification
 
-For more information, see [The new operator](~/_csharplang/spec/expressions.md#the-new-operator) section of the [C# language specification](~/_csharplang/spec/introduction.md).
+For more information, see [The new operator](~/_csharpstandard/standard/expressions.md#11715-the-new-operator) section of the [C# language specification](~/_csharpstandard/standard/README.md).
 
 For more information about a target-typed `new` expression, see the [feature proposal note](~/_csharplang/proposals/csharp-9.0/target-typed-new.md).
 

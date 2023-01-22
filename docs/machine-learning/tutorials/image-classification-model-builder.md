@@ -28,9 +28,6 @@ In this tutorial, you:
 > - Evaluate the model
 > - Consume the model
 
-> [!NOTE]
-> Model Builder is currently in Preview.
-
 ## Prerequisites
 
 - For a list of pre-requisites and installation instructions, visit the [Model Builder installation guide](../how-to-guides/install-model-builder.md).
@@ -39,7 +36,7 @@ In this tutorial, you:
 
 ## Model Builder image classification overview
 
-This sample creates C# class library that categorizes land use from map satellite imagery using a deep learning model trained on Azure with Model Builder. You can find the source code for this tutorial in the [dotnet/machinelearning-samples](https://github.com/dotnet/machinelearning-samples/tree/master/samples/modelbuilder/ImageClassification_Azure_LandUse) GitHub repository
+This sample creates C# class library that categorizes land use from map satellite imagery using a deep learning model trained on Azure with Model Builder. You can find the source code for this tutorial in the [dotnet/machinelearning-samples](https://github.com/dotnet/machinelearning-samples/tree/main/samples/modelbuilder/ImageClassification_Azure_LandUse) GitHub repository
 
 ## Create a C# Class Library
 
@@ -57,7 +54,7 @@ The EuroSAT dataset contains a collection of satellite images divided into ten c
 
   ![Dataset](./media/image-classification-model-builder/dataset-images.png)
 
-1. Download the subset of the [EuroSAT dataset](https://github.com/dotnet/machinelearning-samples/blob/master/samples/modelbuilder/ImageClassification_Azure_LandUse/assets.zip) and save it anywhere on your computer.
+1. Download the subset of the [EuroSAT dataset](https://github.com/dotnet/machinelearning-samples/blob/main/samples/modelbuilder/ImageClassification_Azure_LandUse/assets.zip) and save it anywhere on your computer.
 1. Unzip it.
 
 ## Create a Model Builder config file
@@ -69,13 +66,13 @@ When first adding Model Builder to the solution it will prompt you to create an 
 
 ## Choose a scenario
 
-![Model Builder Scenarios](../media/model-builder-scenarios.png)
+:::image type="content" source="../media/model-builder-scenarios-2-0.png" alt-text="Model Builder Scenario Screen" lightbox="../media/model-builder-scenarios-2-0.png":::
 
 To train your model, you need to select from the list of available machine learning scenarios provided by Model Builder.
 
 For this sample, the task is image classification. In the scenario step of the Model Builder tool, select the **Image Classification** scenario.
 
-## Select an enviornment
+## Select an environment
 
 Model Builder can run the training on different environments depending on the scenario that was selected.
 
@@ -210,7 +207,7 @@ If you no longer plan to use the Azure resources you created, delete them. This 
 1. Navigate to the [Azure portal](https://portal.azure.com/) and select **Resource groups** in the portal menu.
 1. From the list of resource groups, select the resource group you created. In this case, it's "landuse-rg".
 1. Select **Delete resource group**.
-1. Type the resource group name, "landuse-rg", into the text box and then select **Enter**.
+1. Type the resource group name, "landuse-rg", into the text box and then select <kbd>Enter</kbd>.
 
 ## Next steps
 

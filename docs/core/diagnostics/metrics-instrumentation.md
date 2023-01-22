@@ -29,7 +29,7 @@ version 6 or greater. Applications that target .NET 6+ include this reference by
 > dotnet add package System.Diagnostics.DiagnosticSource
 ```
 
-```C#
+```csharp
 using System;
 using System.Diagnostics.Metrics;
 using System.Threading;
@@ -37,7 +37,7 @@ using System.Threading;
 class Program
 {
     static Meter s_meter = new Meter("HatCo.HatStore", "1.0.0");
-    static Counter<int> s_hatsSold = s_meter.CreateCounter<int>("hats-sold"); 
+    static Counter<int> s_hatsSold = s_meter.CreateCounter<int>("hats-sold");
 
     static void Main(string[] args)
     {
@@ -76,7 +76,7 @@ Press any key to exit
 (and often should) create its own <xref:System.Diagnostics.Metrics.Meter>. Consider creating a new Meter rather than reusing an existing one if you anticipate
 app developers would appreciate being able to enable and disable the groups of metrics separately.
 
-- The name passed to the <xref:System.Diagnostics.Metrics.Meter> constructor has to be unique to avoid conflicts with any other Meters. Use a dotted hierarichal
+- The name passed to the <xref:System.Diagnostics.Metrics.Meter> constructor has to be unique to avoid conflicts with any other Meters. Use a dotted hierarchical
 name that contains the assembly name and optionally a subcomponent name. If an assembly is adding instrumentation for code in a second, independent assembly, the name
 should be based on the assembly that defines the Meter, not the assembly whose code is being instrumented.
 
@@ -138,17 +138,27 @@ in two ways:
 
 Types of instruments currently available:
 
-- **Counter** (<xref:System.Diagnostics.Metrics.Meter.CreateCounter%2A>) - This instrument conceptually tracks a value that increases over time and the caller reports the
+- **Counter** (<xref:System.Diagnostics.Metrics.Meter.CreateCounter%2A>) - This instrument tracks a value that increases over time and the caller reports the
   increments using <xref:System.Diagnostics.Metrics.Counter%601.Add%2A>. Most tools will calculate the total and the rate of change in the total. For tools that only show
   one thing, the rate of change is recommended. For example, assume that the caller invokes `Add()` once each second with successive values 1, 2, 4, 5, 4, 3. If the collection
   tool updates every three seconds, then the total after three seconds is 1+2+4=7 and the total after six seconds is 1+2+4+5+4+3=19. The rate of change is the
   (current_total - previous_total), so at three seconds the tool reports 7-0=7, and after six seconds, it reports 19-7=12.
 
+- **UpDownCounter** (<xref:System.Diagnostics.Metrics.Meter.CreateUpDownCounter%2A>) - This instrument tracks a value that may increase or decrease over time. The caller reports the
+  increments and decrements using <xref:System.Diagnostics.Metrics.UpDownCounter%601.Add%2A>. For example, assume that the caller invokes `Add()` once each second with successive
+  values 1, 5, -2, 3, -1, -3. If the collection tool updates every three seconds, then the total after three seconds is 1+5-2=4 and the total after six seconds is 1+5-2+3-1-3=3.
+
 - **ObservableCounter** (<xref:System.Diagnostics.Metrics.Meter.CreateObservableCounter%2A>) - This instrument is similar to Counter except that the caller is now responsible
   for maintaining the aggregated total. The caller provides a callback delegate when the ObservableCounter is created and the callback is invoked whenever tools need to observe
-  the current total. For example, if a collection tool updates every three seconds, then the callback will also be invoked every three seconds. Most tools will have both the total and
-  rate of change in the total available. If only one can be shown, rate of change is recommended. If the callback returns 0, 7, and 19 at 0, 3, and 6 seconds respectively, then the
-  tool will report those values as the totals. For rate of change, the tool will show 7-0=7 after three seconds and 19-7=12 after six seconds.
+  the current total. For example, if a collection tool updates every three seconds, then the callback function will also be invoked every three seconds. Most tools will have both
+  the total and rate of change in the total available. If only one can be shown, rate of change is recommended. If the callback returns 0 on the initial call, 7 when it is called
+  again after three seconds, and 19 when called after six seconds, then the tool will report those values unchanged as the totals. For rate of change, the tool will show 7-0=7
+  after three seconds and 19-7=12 after six seconds.
+
+- **ObservableUpDownCounter** (<xref:System.Diagnostics.Metrics.Meter.CreateObservableUpDownCounter%2A>) - This instrument is similar to UpDownCounter except that the caller is now responsible
+  for maintaining the aggregated total. The caller provides a callback delegate when the ObservableUpDownCounter is created and the callback is invoked whenever tools need to observe
+  the current total. For example, if a collection tool updates every three seconds, then the callback function will also be invoked every three seconds. Whatever value is returned by
+  the callback will be shown in the collection tool unchanged as the total.
 
 - **ObservableGauge** (<xref:System.Diagnostics.Metrics.Meter.CreateObservableGauge%2A>) - This instrument allows the caller to provide a callback where the measured value
   is passed through directly as the metric. Each time the collection tool updates, the callback is invoked, and whatever value is returned by the callback is displayed in
@@ -169,17 +179,19 @@ Types of instruments currently available:
 - For timing things, Histogram is usually preferred. Often it's useful to understand the tail of these distributions (90th, 95th, 99th percentile) rather than averages or
   totals.
 
-- Other common cases, such as business metrics, physical sensors, cache hit rates, or sizes of caches, queues, and files are usually well suited for `ObservableGauge`.
+- Other common cases, such as cache hit rates or sizes of caches, queues, and files are usually well suited for `UpDownCounter` or `ObservableUpDownCounter`.
+  Choose between them depending on which is easier to add to the existing code: either an API call for each increment and decrement operation or a callback that will read the current value from
+  a variable the code maintains.
 
 > [!NOTE]
-> OpenTelemetry also defines an UpDownCounter not currently present in the .NET API. ObservableGauge can usually be substituted by defining a variable to store the running
-> total and reporting the value of that variable in the ObservableGauge callback.
+> If you're using an older version of .NET or a DiagnosticSource NuGet package that doesn't support `UpDownCounter` and `ObservableUpDownCounter` (before version 7), `ObservableGauge` is
+> often a good substitute.
 
 ### Example of different instrument types
 
 Stop the example process started previously, and replace the example code in `Program.cs` with:
 
-```C#
+```csharp
 using System;
 using System.Diagnostics.Metrics;
 using System.Threading;
@@ -260,13 +272,13 @@ summarize the distribution differently or offer more configuration options.
   as we did for the other instruments is legal but error prone, because C# static initialization is lazy and the variable is usually never referenced. Here is an example
   of the problem:
 
-```C#
+```csharp
 using System;
 using System.Diagnostics.Metrics;
 
 class Program
 {
-    // BEWARE! Static initializers only run when code in a running method refers to a static variable. 
+    // BEWARE! Static initializers only run when code in a running method refers to a static variable.
     // These statics will never be initialized because none of them were referenced in Main().
     //
     static Meter s_meter = new Meter("HatCo.HatStore", "1.0.0");
@@ -285,7 +297,7 @@ class Program
 Instruments can specify optional descriptions and units. These values are opaque to all metric calculations but can be shown in collection tool UI
 to help engineers understand how to interpret the data. Stop the example process you started previously, and replace the example code in `Program.cs` with:
 
-```C#
+```csharp
 using System;
 using System.Diagnostics.Metrics;
 using System.Threading;
@@ -293,9 +305,9 @@ using System.Threading;
 class Program
 {
     static Meter s_meter = new Meter("HatCo.HatStore", "1.0.0");
-    static Counter<int> s_hatsSold = s_meter.CreateCounter<int>(name: "hats-sold", 
+    static Counter<int> s_hatsSold = s_meter.CreateCounter<int>(name: "hats-sold",
                                                                 unit: "Hats",
-                                                                description: "The number of hats sold in our store"); 
+                                                                description: "The number of hats sold in our store");
 
     static void Main(string[] args)
     {
@@ -336,7 +348,7 @@ size, color, or any combination of both.
 Counter and Histogram tags can be specified in overloads of the <xref:System.Diagnostics.Metrics.Counter%601.Add%2A> and
 <xref:System.Diagnostics.Metrics.Histogram%601.Record%2A> that take one or more `KeyValuePair` arguments. For example:
 
-```C#
+```csharp
 s_hatsSold.Add(2,
                new KeyValuePair<string, object>("Color", "Red"),
                new KeyValuePair<string, object>("Size", 12));
@@ -345,7 +357,7 @@ s_hatsSold.Add(2,
 
 Replace the code of `Program.cs` and rerun the app and dotnet-counters as before:
 
-```C#
+```csharp
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
@@ -354,16 +366,16 @@ using System.Threading;
 class Program
 {
     static Meter s_meter = new Meter("HatCo.HatStore", "1.0.0");
-    static Counter<int> s_hatsSold = s_meter.CreateCounter<int>("hats-sold"); 
+    static Counter<int> s_hatsSold = s_meter.CreateCounter<int>("hats-sold");
 
     static void Main(string[] args)
     {
         Console.WriteLine("Press any key to exit");
         while(!Console.KeyAvailable)
         {
-            // Pretend our store has a transaction each 100ms that sells 2 red size 12 hats and 1 blue size 19 hat.
+            // Pretend our store has a transaction, every 100ms, that sells 2 (size 12) red hats, and 1 (size 19) blue hat.
             Thread.Sleep(100);
-            s_hatsSold.Add(2, 
+            s_hatsSold.Add(2,
                            new KeyValuePair<string,object>("Color", "Red"),
                            new KeyValuePair<string,object>("Size", 12));
             s_hatsSold.Add(1,
@@ -389,7 +401,7 @@ Press p to pause, r to resume, q to quit.
 
 For ObservableCounter and ObservableGauge, tagged measurements can be provided in the callback passed to the constructor:
 
-```C#
+```csharp
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
@@ -408,7 +420,7 @@ class Program
 
     static IEnumerable<Measurement<int>> GetOrdersPending()
     {
-        return new Measurement<int>[] 
+        return new Measurement<int>[]
         {
             // pretend these measurements were read from a real queue somewhere
             new Measurement<int>(6, new KeyValuePair<string,object>("Country", "Italy")),
@@ -458,4 +470,4 @@ Press p to pause, r to resume, q to quit.
   the performance overhead of these calls increases as more tags are used.
 
 > [!NOTE]
-> OpenTelemetry refers to tags as 'attributes'. Despite the name, the functionality is the same.
+> OpenTelemetry refers to tags as 'attributes'. These are two different names for the same functionality.

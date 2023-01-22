@@ -6,6 +6,8 @@ ms.date: 01/13/2021
 
 # Implement the infrastructure persistence layer with Entity Framework Core
 
+[!INCLUDE [download-alert](../includes/download-alert.md)]
+
 When you use relational databases such as SQL Server, Oracle, or PostgreSQL, a recommended approach is to implement the persistence layer based on Entity Framework (EF). EF supports LINQ and provides strongly typed objects for your model, as well as simplified persistence into your database.
 
 Entity Framework has a long history as part of the .NET Framework. When you use .NET, you should also use Entity Framework Core, which runs on Windows or Linux in the same way as .NET. EF Core is a complete rewrite of Entity Framework that's implemented with a much smaller footprint and important improvements in performance.
@@ -19,16 +21,16 @@ Since an introduction to EF Core is already available in Microsoft documentation
 ### Additional resources
 
 - **Entity Framework Core** \
-  [https://docs.microsoft.com/ef/core/](/ef/core/)
+  [https://learn.microsoft.com/ef/core/](/ef/core/)
 
 - **Getting started with ASP.NET Core and Entity Framework Core using Visual Studio** \
-  [https://docs.microsoft.com/aspnet/core/data/ef-mvc/](/aspnet/core/data/ef-mvc/)
+  [https://learn.microsoft.com/aspnet/core/data/ef-mvc/](/aspnet/core/data/ef-mvc/)
 
 - **DbContext Class** \
-  [https://docs.microsoft.com/dotnet/api/microsoft.entityframeworkcore.dbcontext](xref:Microsoft.EntityFrameworkCore.DbContext)
+  [https://learn.microsoft.com/dotnet/api/microsoft.entityframeworkcore.dbcontext](xref:Microsoft.EntityFrameworkCore.DbContext)
 
 - **Compare EF Core & EF6.x** \
-  [https://docs.microsoft.com/ef/efcore-and-ef6/index](/ef/efcore-and-ef6/index)
+  [https://learn.microsoft.com/ef/efcore-and-ef6/index](/ef/efcore-and-ef6/index)
 
 ## Infrastructure in Entity Framework Core from a DDD perspective
 
@@ -370,7 +372,7 @@ As introduced earlier in the design section, the Query Specification pattern is 
 
 The Query Specification pattern defines a query in an object. For example, in order to encapsulate a paged query that searches for some products you can create a PagedProduct specification that takes the necessary input parameters (pageNumber, pageSize, filter, etc.). Then, within any Repository method (usually a List() overload) it would accept an IQuerySpecification and run the expected query based on that specification.
 
-An example of a generic Specification interface is the following code from [eShopOnWeb](https://github.com/dotnet-architecture/eShopOnWeb).
+An example of a generic Specification interface is the following code, which is similar to code used in the [eShopOnWeb](https://github.com/dotnet-architecture/eShopOnWeb) reference application.
 
 ```csharp
 // GENERIC SPECIFICATION INTERFACE
@@ -467,22 +469,24 @@ In addition to encapsulating filtering logic, the specification can specify the 
 
 Although we don't recommend returning `IQueryable` from a repository, it's perfectly fine to use them within the repository to build up a set of results. You can see this approach used in the List method above, which uses intermediate `IQueryable` expressions to build up the query's list of includes before executing the query with the specification's criteria on the last line.
 
+Learn [how the specification pattern is applied in the eShopOnWeb sample](https://github.com/dotnet-architecture/eShopOnWeb/wiki/Patterns#specification).
+
 ### Additional resources
 
 - **Table Mapping** \
-  [https://docs.microsoft.com/ef/core/modeling/relational/tables](/ef/core/modeling/relational/tables)
+  [https://learn.microsoft.com/ef/core/modeling/relational/tables](/ef/core/modeling/relational/tables)
 
 - **Use HiLo to generate keys with Entity Framework Core** \
   <https://www.talkingdotnet.com/use-hilo-to-generate-keys-with-entity-framework-core/>
 
 - **Backing Fields** \
-  [https://docs.microsoft.com/ef/core/modeling/backing-field](/ef/core/modeling/backing-field)
+  [https://learn.microsoft.com/ef/core/modeling/backing-field](/ef/core/modeling/backing-field)
 
 - **Steve Smith. Encapsulated Collections in Entity Framework Core** \
   <https://ardalis.com/encapsulated-collections-in-entity-framework-core>
 
 - **Shadow Properties** \
-  [https://docs.microsoft.com/ef/core/modeling/shadow-properties](/ef/core/modeling/shadow-properties)
+  [https://learn.microsoft.com/ef/core/modeling/shadow-properties](/ef/core/modeling/shadow-properties)
 
 - **The Specification pattern** \
   <https://deviq.com/specification-pattern/>

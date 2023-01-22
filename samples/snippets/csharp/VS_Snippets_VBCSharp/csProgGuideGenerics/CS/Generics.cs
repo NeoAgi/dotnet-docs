@@ -359,45 +359,6 @@ namespace CsCsrefProgrammingGenerics
     }
 
     //---------------------------------------------------------------------------
-    class WrapInterfaces
-    {
-        //<Snippet30>
-        class Stack<T> where T : System.IComparable<T>, IEnumerable<T>
-        {
-        }
-        //</Snippet30>
-
-        //<Snippet31>
-        interface IDictionary<K, V>
-        {
-        }
-        //</Snippet31>
-
-        //<Snippet32>
-        interface IMonth<T> { }
-
-        interface IJanuary     : IMonth<int> { }  //No error
-        interface IFebruary<T> : IMonth<int> { }  //No error
-        interface IMarch<T>    : IMonth<T> { }    //No error
-        //interface IApril<T>  : IMonth<T, U> {}  //Error
-        //</Snippet32>
-
-        //<Snippet33>
-        interface IBaseInterface<T> { }
-
-        class SampleClass : IBaseInterface<string> { }
-        //</Snippet33>
-
-        //<Snippet34>
-        interface IBaseInterface1<T> { }
-        interface IBaseInterface2<T, U> { }
-
-        class SampleClass1<T> : IBaseInterface1<T> { }          //No error
-        class SampleClass2<T> : IBaseInterface2<T, string> { }  //No error
-        //</Snippet34>
-    }
-
-    //---------------------------------------------------------------------------
     namespace WrapMethods
     {
         public class Test
@@ -564,11 +525,11 @@ namespace CsCsrefProgrammingGenerics
         class Stack<T>
         {
             public class StackEventArgs : System.EventArgs { }
-            public event StackEventHandler<Stack<T>, StackEventArgs> stackEvent;
+            public event StackEventHandler<Stack<T>, StackEventArgs> StackEvent;
 
             protected virtual void OnStackChanged(StackEventArgs a)
             {
-                stackEvent(this, a);
+                StackEvent(this, a);
             }
         }
 
@@ -581,7 +542,7 @@ namespace CsCsrefProgrammingGenerics
         {
             Stack<double> s = new Stack<double>();
             SampleClass o = new SampleClass();
-            s.stackEvent += o.HandleStackChange;
+            s.StackEvent += o.HandleStackChange;
         }
         //</Snippet40>
     }
@@ -702,52 +663,5 @@ namespace CsCsrefProgrammingGenerics
             customers = new Stack<Customer>();
             //</Snippet46>
         }
-    }
-
-    //---------------------------------------------------------------------------
-    class WrapAttributes
-    {
-        //-----------------------------------------------------
-        //<Snippet48>
-        class CustomAttribute : System.Attribute
-        {
-            public System.Object info;
-        }
-        //</Snippet48>
-
-        //-----------------------------------------------------
-        //<Snippet49>
-        public class GenericClass1<T> { }
-
-        [CustomAttribute(info = typeof(GenericClass1<>))]
-        class ClassA { }
-        //</Snippet49>
-
-        //-----------------------------------------------------
-        //<Snippet50>
-        public class GenericClass2<T, U> { }
-
-        [CustomAttribute(info = typeof(GenericClass2<,>))]
-        class ClassB { }
-        //</Snippet50>
-
-        //-----------------------------------------------------
-        //<Snippet51>
-        public class GenericClass3<T, U, V> { }
-
-        [CustomAttribute(info = typeof(GenericClass3<int, double, string>))]
-        class ClassC { }
-        //</Snippet51>
-
-        //-----------------------------------------------------
-        //<Snippet52>
-        //[CustomAttribute(info = typeof(GenericClass3<int, T, string>))]  //Error
-        class ClassD<T> { }
-        //</Snippet52>
-
-        //-----------------------------------------------------
-        //<Snippet53>
-        //public class CustomAtt<T> : System.Attribute {}  //Error
-        //</Snippet53>
     }
 }

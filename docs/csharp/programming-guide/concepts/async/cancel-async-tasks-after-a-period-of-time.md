@@ -43,7 +43,7 @@ static async Task Main()
 
         await SumPageSizesAsync();
     }
-    catch (TaskCanceledException)
+    catch (OperationCanceledException)
     {
         Console.WriteLine("\nTasks cancelled: timed out.\n");
     }
@@ -58,17 +58,17 @@ static async Task Main()
 
 The updated `Main` method writes a few instructional messages to the console. Within the [try catch](../../../language-reference/keywords/try-catch.md), a call to <xref:System.Threading.CancellationTokenSource.CancelAfter(System.Int32)?displayProperty=nameWithType> schedules a cancellation. This will signal cancellation after a period of time.
 
-Next, the `SumPageSizesAsync` method is awaited. If processing all of the URLs occurs faster than the scheduled cancellation, the application ends. However, if the scheduled cancellation is triggered before all of the URLs are processed, a <xref:System.Threading.Tasks.TaskCanceledException> is thrown.
+Next, the `SumPageSizesAsync` method is awaited. If processing all of the URLs occurs faster than the scheduled cancellation, the application ends. However, if the scheduled cancellation is triggered before all of the URLs are processed, a <xref:System.OperationCanceledException> is thrown.
 
 ### Example application output
 
 ```console
 Application started.
 
-https://docs.microsoft.com                                       37,357
-https://docs.microsoft.com/aspnet/core                           85,589
-https://docs.microsoft.com/azure                                398,939
-https://docs.microsoft.com/azure/devops                          73,663
+https://learn.microsoft.com                                       37,357
+https://learn.microsoft.com/aspnet/core                           85,589
+https://learn.microsoft.com/azure                                398,939
+https://learn.microsoft.com/azure/devops                          73,663
 
 Tasks cancelled: timed out.
 

@@ -2,7 +2,7 @@
 description: "using directive - C# Reference"
 title: "using directive - C# Reference"
 ms.date: 08/19/2021
-f1_keywords: 
+f1_keywords:
   - "using_CSharpKeyword"
 helpviewer_keywords:
   - "using directive [C#]"
@@ -19,7 +19,7 @@ using System.Text;
 You can apply two modifiers to a `using` directive:
 
 - The `global` modifier has the same effect as adding the same `using` directive to every source file in your project. This modifier was introduced in C# 10.
-- The `static` modifier imports the `static` members and nested types from a single type rather than importing all the types in a namespace. This modifier was introduced in C# 6.0.
+- The `static` modifier imports the `static` members and nested types from a single type rather than importing all the types in a namespace.
 
 You can combine both modifiers to import the static members from a type in all source files in your project.
 
@@ -74,7 +74,7 @@ You can also globally include a namespace by adding a `<Using>` item to your pro
 
 ## static modifier
 
-The `using static` directive names a type whose static members and nested types you can access without specifying a type name. The `using static` directive was introduced in C# 6. Its syntax is:
+The `using static` directive names a type whose static members and nested types you can access without specifying a type name. Its syntax is:
 
 ```csharp
 using static <fully-qualified-type-name>;
@@ -118,6 +118,27 @@ The following example uses the `using static` directive to make the static membe
 
 In the example, the `using static` directive could also have been applied to the <xref:System.Double> type. Adding that directive would make it possible to call the <xref:System.Double.TryParse(System.String,System.Double@)> method without specifying a type name. However, using `TryParse` without a type name creates less readable code, since it becomes necessary to check the `using static` directives to determine which numeric type's `TryParse` method is called.
 
+`using static` also applies to `enum` types.  By adding `using static` with the enum, the type is no longer required to use the enum members.
+
+```csharp
+using static Color;
+
+enum Color
+{
+    Red,
+    Green,
+    Blue
+}
+
+class Program
+{
+    public static void Main()
+    {
+        Color color = Green;
+    }
+}
+```
+
 ## using alias
 
 Create a `using` alias directive to make it easier to qualify an identifier to a namespace or type. In any `using` directive, the fully qualified namespace or type must be used regardless of the `using` directives that come before it. No `using` alias can be used in the declaration of a `using` directive. For example, the following example generates a compiler error:
@@ -149,12 +170,14 @@ You need to add a reference to the *Microsoft.VisualBasic.dll* assembly in your 
 
 ## C# language specification
 
-For more information, see [Using directives](~/_csharplang/spec/namespaces.md#using-directives) in the [C# Language Specification](/dotnet/csharp/language-reference/language-specification/introduction). The language specification is the definitive source for C# syntax and usage.
+For more information, see [Using directives](~/_csharpstandard/standard/namespaces.md#135-using-directives) in the [C# Language Specification](~/_csharpstandard/standard/README.md). The language specification is the definitive source for C# syntax and usage.
 
 For more information on the *global using* modifier, see the [global usings feature specification - C# 10](~/_csharplang/proposals/csharp-10.0/GlobalUsingDirective.md).
 
 ## See also
 
+- [Style rule IDE0005 - Remove unnecessary 'using' directives](../../../fundamentals/code-analysis/style-rules/ide0005.md)
+- [Style rule IDE0065 - 'using' directive placement](../../../fundamentals/code-analysis/style-rules/ide0065.md)
 - [C# Reference](../index.md)
 - [C# Programming Guide](../../programming-guide/index.md)
 - [C# Keywords](index.md)

@@ -1,8 +1,8 @@
-namespace MyNamespace
+﻿namespace MyNamespace
 {
     /// <summary>
     /// Enter description here for class X.
-    /// ID string generated is "T:MyNamespace.X".
+    /// ID string generated is "T:MyNamespace.MyClass".
     /// </summary>
     public unsafe class MyClass
     {
@@ -23,7 +23,7 @@ namespace MyNamespace
         /// Enter description here for field message.
         /// ID string generated is "F:MyNamespace.MyClass.message".
         /// </summary>
-        public string message;
+        public string? message;
 
         /// <summary>
         /// Enter description for constant PI.
@@ -76,7 +76,7 @@ namespace MyNamespace
         /// Enter description for event.
         /// ID string generated is "E:MyNamespace.MyClass.OnHappened".
         /// </summary>
-        public event Del OnHappened;
+        public event Del? OnHappened;
 
         /// <summary>
         /// Enter description for index.
@@ -101,7 +101,7 @@ namespace MyNamespace
 
         /// <summary>
         /// Enter description for operator.
-        /// ID string generated is "M:MyNamespace.MyClass.op_Explicit(MyNamespace.X)~System.Int32".
+        /// ID string generated is "M:MyNamespace.MyClass.op_Explicit(MyNamespace.MyClass)~System.Int32".
         /// </summary>
         /// <param name="myParameter">Describe parameter.</param>
         /// <returns>Describe return value.</returns>

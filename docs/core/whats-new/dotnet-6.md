@@ -26,7 +26,7 @@ This article does not cover all of the new features of .NET 6. To see all of the
 
 ## Performance
 
-.NET 6 includes numerous performance improvements. This section lists some of the improvements. For detailed information, see the [Performance improvements in .NET 6](https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-6/) blog post.
+.NET 6 includes numerous performance improvements. This section lists some of the improvements&mdash;in [FileStream](#filestream), [profile-guided optimization](#profile-guided-optimization), and [AOT compilation](#crossgen2). For detailed information, see the [Performance improvements in .NET 6](https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-6/) blog post.
 
 ### FileStream
 
@@ -34,7 +34,7 @@ The <xref:System.IO.FileStream?displayProperty=fullName> type has been rewritten
 
 ### Profile-guided optimization
 
-Profile-guided optimization (PGO) is where the JIT compiler generates optimized code in terms of the types and code paths that are most frequently used. .NET 6 introduces *dynamic* PGO. Dynamic PGO works hand-in-hand with tiered compilation to further optimize code based on additional instrumentation that's put in place during tier 0. Dynamic PGO is disabled by default, but you can enable it with the `DOTNET_TieredPGO` [environment variable](../run-time-config/compilation.md#profile-guided-optimization). For more information, see [JIT performance improvements](https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-6/#jit).
+Profile-guided optimization (PGO) is where the JIT compiler generates optimized code in terms of the types and code paths that are most frequently used. .NET 6 introduces *dynamic* PGO. Dynamic PGO works hand-in-hand with tiered compilation to further optimize code based on additional instrumentation that's put in place during tier 0. Dynamic PGO is disabled by default, but you can enable it with the `DOTNET_TieredPGO` [environment variable](../runtime-config/compilation.md#profile-guided-optimization). For more information, see [JIT performance improvements](https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-6/#jit).
 
 ### Crossgen2
 
@@ -94,7 +94,7 @@ Many improvements have been made in <xref:System.Text.Json?displayProperty=fullN
 
 ### Source generator
 
-.NET 6 adds a new [source generator](../../csharp/roslyn-sdk/source-generators-overview.md) for <xref:System.Text.Json?displayProperty=fullName>. Source generation works with <xref:System.Text.Json.JsonSerializer> and can be configured in multiple ways. It can improve performance, reduce memory usage, and facilitate assembly trimming. For more information, see [How to choose reflection or source generation in System.Text.Json](../../standard/serialization/system-text-json-source-generation-modes.md) and [How to use source generation in System.Text.Json](../../standard/serialization/system-text-json-source-generation.md).
+.NET 6 adds a new [source generator](../../csharp/roslyn-sdk/source-generators-overview.md) for <xref:System.Text.Json?displayProperty=fullName>. Source generation works with <xref:System.Text.Json.JsonSerializer> and can be configured in multiple ways. It can improve performance, reduce memory usage, and facilitate assembly trimming. For more information, see [How to choose reflection or source generation in System.Text.Json](../../standard/serialization/system-text-json/source-generation-modes.md) and [How to use source generation in System.Text.Json](../../standard/serialization/system-text-json/source-generation.md).
 
 ### Writeable DOM
 
@@ -105,7 +105,7 @@ A new, writeable document object model (DOM) has been added, which supplements t
 - <xref:System.Text.Json.Nodes.JsonObject>
 - <xref:System.Text.Json.Nodes.JsonValue>
 
-For more information, see [JSON DOM choices](../../standard/serialization/system-text-json-use-dom-utf8jsonreader-utf8jsonwriter.md?pivots=dotnet-6-0#json-dom-choices).
+For more information, see [JSON DOM choices](../../standard/serialization/system-text-json/use-dom-utf8jsonreader-utf8jsonwriter.md?pivots=dotnet-6-0#json-dom-choices).
 
 ### IAsyncEnumerable serialization
 
@@ -120,19 +120,19 @@ New serialization interfaces for validation and defaulting values:
 - <xref:System.Text.Json.Serialization.IJsonOnSerialized>
 - <xref:System.Text.Json.Serialization.IJsonOnSerializing>
 
-For more information, see [Callbacks](../../standard/serialization/system-text-json-migrate-from-newtonsoft-how-to.md?pivots=dotnet-6-0#callbacks).
+For more information, see [Callbacks](../../standard/serialization/system-text-json/migrate-from-newtonsoft.md?pivots=dotnet-6-0#callbacks).
 
 New property ordering attribute:
 
 - <xref:System.Text.Json.Serialization.JsonPropertyOrderAttribute>
 
-  For more information, see [Configure the order of serialized properties](../../standard/serialization/system-text-json-customize-properties.md?pivots=dotnet-6-0#configure-the-order-of-serialized-properties).
+  For more information, see [Configure the order of serialized properties](../../standard/serialization/system-text-json/customize-properties.md?pivots=dotnet-6-0#configure-the-order-of-serialized-properties).
 
 New method to write "raw" JSON:
 
 - <xref:System.Text.Json.Utf8JsonWriter.WriteRawValue%2A?displayProperty=nameWithType>
 
-  For more information, see [Write Raw JSON](../../standard/serialization/system-text-json-use-dom-utf8jsonreader-utf8jsonwriter.md?pivots=dotnet-6-0#write-raw-json).
+  For more information, see [Write Raw JSON](../../standard/serialization/system-text-json/use-dom-utf8jsonreader-utf8jsonwriter.md?pivots=dotnet-6-0#write-raw-json).
 
 Synchronous serialization and deserialization to a stream:
 
@@ -149,9 +149,9 @@ New option to ignore an object when a reference cycle is detected during seriali
 
 - <xref:System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles?displayProperty=nameWithType>
 
-  For more information, see [Ignore circular references](../../standard/serialization/system-text-json-preserve-references.md#ignore-circular-references).
+  For more information, see [Ignore circular references](../../standard/serialization/system-text-json/preserve-references.md#ignore-circular-references).
 
-For more information about serializing and deserializing with `System.Text.Json`, see [JSON serialization and deserialization in .NET](../../standard/serialization/system-text-json-overview.md).
+For more information about serializing and deserializing with `System.Text.Json`, see [JSON serialization and deserialization in .NET](../../standard/serialization/system-text-json/overview.md).
 
 ## HTTP/3
 
@@ -161,7 +161,7 @@ For more information about serializing and deserializing with `System.Text.Json`
 
 ASP.NET Core includes improvements in minimal APIs, ahead-of-time (AOT) compilation for Blazor WebAssembly apps, and single-page apps. In addition, Blazor components can now be rendered from JavaScript and integrated with existing JavaScript based apps. For more information, see [What's new in ASP.NET Core 6](/aspnet/core/release-notes/aspnetcore-6.0).
 
-### OpenTelemetry
+## OpenTelemetry
 
 .NET 6 brings improved support for [OpenTelemetry](https://opentelemetry.io/), which is a collection of tools, APIs, and SDKs that help you analyze your software's performance and behavior. APIs in the <xref:System.Diagnostics.Metrics?displayProperty=fullName> namespace implement the [OpenTelemetry Metrics API specification](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/api.md). For example, there are four instrument classes to support different metrics scenarios. The instrument classes are:
 
@@ -218,7 +218,7 @@ In *preview* is the ability to use operators on generic types in .NET 6. .NET 6 
 If you're a NuGet library developer, new [package-validation tooling](../../fundamentals/package-validation/overview.md) enables you to validate that your packages are consistent and well-formed. You can determine if:
 
 - There are any breaking changes across package versions.
-- The package has the same set of publics APIs for all runtime-specific implementations.
+- The package has the same set of public APIs for all runtime-specific implementations.
 - There are any gaps for target-framework or runtime applicability.
 
 For more information, see the [Package Validation](https://devblogs.microsoft.com/dotnet/package-validation/) blog post.

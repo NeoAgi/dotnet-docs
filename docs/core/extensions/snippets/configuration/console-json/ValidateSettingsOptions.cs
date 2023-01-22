@@ -1,39 +1,43 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ConsoleJson.Example;
 
-class ValidateSettingsOptions : IValidateOptions<SettingsOptions>
+sealed partial class ValidateSettingsOptions : IValidateOptions<SettingsOptions>
 {
-    public SettingsOptions _settings { get; private set; }
+    public SettingsOptions? _settings { get; private set; }
 
     public ValidateSettingsOptions(IConfiguration config) =>
         _settings = config.GetSection(SettingsOptions.ConfigurationSectionName)
                           .Get<SettingsOptions>();
 
-    public ValidateOptionsResult Validate(string name, SettingsOptions options)
+    public ValidateOptionsResult Validate(string? name, SettingsOptions options)
     {
-        string result = "";
-        var rx = new Regex(@"^[a-zA-Z''-'\s]{1,40}$");
+        StringBuilder failure = new();
+        var rx = ValidationRegex();
         Match match = rx.Match(options.SiteTitle);
         if (string.IsNullOrEmpty(match.Value))
         {
-            result += $"{options.SiteTitle} doesn't match RegEx\n";
+            failure.AppendLine($"{options.SiteTitle} doesn't match RegEx");
         }
 
         if (options.Scale < 0 || options.Scale > 1000)
         {
-            result += $"{options.Scale} isn't within Range 0 - 1000\n";
+            failure.AppendLine($"{options.Scale} isn't within Range 0 - 1000");
         }
 
-        if (_settings.Scale is 0 && _settings.VerbosityLevel <= _settings.Scale)
+        if (_settings is { Scale: 0 } && _settings.VerbosityLevel <= _settings.Scale)
         {
-            result += "VerbosityLevel must be > than Scale.";
+            failure.AppendLine("VerbosityLevel must be > than Scale.");
         }
 
-        return result != null
-            ? ValidateOptionsResult.Fail(result)
+        return failure.Length > 0
+            ? ValidateOptionsResult.Fail(failure.ToString())
             : ValidateOptionsResult.Success;
     }
+
+    [GeneratedRegex("^[a-zA-Z''-'\\s]{1,40}$")]
+    private static partial Regex ValidationRegex();
 }

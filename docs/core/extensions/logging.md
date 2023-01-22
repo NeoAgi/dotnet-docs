@@ -1,20 +1,23 @@
 ---
-title: Logging in .NET
+title: Logging
 author: IEvangelist
 description: Learn how to use the logging framework provided by the Microsoft.Extensions.Logging NuGet package.
 ms.author: dapine
-ms.date: 11/12/2021
+ms.date: 11/03/2022
 ---
 
 # Logging in .NET
 
-.NET supports a logging API that works with a variety of built-in and third-party logging providers. This article shows how to use the logging API with built-in providers. Most of the code examples shown in this article apply to any .NET app that uses the [Generic Host](generic-host.md). For apps that don't use the Generic Host, see [Non-host console app](#non-host-console-app).
+.NET supports a logging API that works with a variety of built-in and third-party logging providers. This article shows how to use the logging API with [built-in providers](logging-providers.md). The logging providers are responsible for determining where logs are written to. Most of the code examples shown in this article apply to any .NET app that uses the [Generic Host](generic-host.md). For apps that don't use the Generic Host, see [Non-host console app](#non-host-console-app).
 
 [!INCLUDE [logging-samples-browser](includes/logging-samples-browser.md)]
 
+> [!IMPORTANT]
+> Starting with .NET 6, logging services no longer register the <xref:Microsoft.Extensions.Logging.ILogger> type. When using a logger, specify the generic-type alternative <xref:Microsoft.Extensions.Logging.ILogger%601> or register the `ILogger` with [dependency injection (DI)](dependency-injection.md).
+
 ## Create logs
 
-To create logs, use an <xref:Microsoft.Extensions.Logging.ILogger%601> object from [dependency injection (DI)](dependency-injection.md).
+To create logs, use an <xref:Microsoft.Extensions.Logging.ILogger%601> object from [DI](dependency-injection.md).
 
 The following example:
 
@@ -33,10 +36,11 @@ Logging configuration is commonly provided by the `Logging` section of *appsetti
 
 In the preceding JSON:
 
-- The `"Default"`, `"Microsoft"`, and `"Microsoft.Hosting.Lifetime"` categories are specified.
+- The `"Default"`, `"Microsoft"`, and `"Microsoft.Hosting.Lifetime"` log level categories are specified.
+- The `"Default"` value is applied to all categories that aren't otherwise specified, effectively making all default values for all categories `"Information"`. You can override this behavior by specifying a value for a category.
 - The `"Microsoft"` category applies to all categories that start with `"Microsoft"`.
-- The `"Microsoft"` category logs at log level `Warning` and higher.
-- The `"Microsoft.Hosting.Lifetime"` category is more specific than the `"Microsoft"` category, so the `"Microsoft.Hosting.Lifetime"` category logs at log level "Information" and higher.
+- The `"Microsoft"` category logs at a log level of `Warning` and higher.
+- The `"Microsoft.Hosting.Lifetime"` category is more specific than the `"Microsoft"` category, so the `"Microsoft.Hosting.Lifetime"` category logs at log level `"Information"` and higher.
 - A specific log provider is not specified, so `LogLevel` applies to all the enabled logging providers except for the [Windows EventLog](logging-providers.md#windows-eventlog).
 
 The `Logging` property can have <xref:Microsoft.Extensions.Logging.LogLevel> and log provider properties. The `LogLevel` specifies the minimum [level](#log-level) to log for selected categories. In the preceding JSON, `Information` and `Warning` log levels are specified. `LogLevel` indicates the severity of the log and ranges from 0 to 6:
@@ -79,13 +83,13 @@ In the preceding sample:
 - The categories and levels are not suggested values. The sample is provided to show all the default providers.
 - Settings in `Logging.{ProviderName}.LogLevel` override settings in `Logging.LogLevel`. For example, the level in `Debug.LogLevel.Default` overrides the level in `LogLevel.Default`.
 - Each provider's *alias* is used. Each provider defines an *alias* that can be used in configuration in place of the fully qualified type name. The built-in providers' aliases are:
-  - Console
-  - Debug
-  - EventSource
-  - EventLog
-  - AzureAppServicesFile
-  - AzureAppServicesBlob
-  - ApplicationInsights
+  - `Console`
+  - `Debug`
+  - `EventSource`
+  - `EventLog`
+  - `AzureAppServicesFile`
+  - `AzureAppServicesBlob`
+  - `ApplicationInsights`
 
 ### Set log level by command line, environment variables, and other configuration
 
@@ -268,13 +272,13 @@ In the preceding code, the first `Log{LogLevel}` parameter,`AppLogEvents.Read`, 
 Configure the appropriate log level and call the correct `Log{LogLevel}` methods to control how much log output is written to a particular storage medium. For example:
 
 - In production:
-  - Logging at the `Trace` or `Information` levels produces a high-volume of detailed log messages. To control costs and not exceed data storage limits, log `Trace` and `Information` level messages to a high-volume, low-cost data store. Consider limiting `Trace` and `Information` to specific categories.
+  - Logging at the `Trace` or `Debug` levels produces a high-volume of detailed log messages. To control costs and not exceed data storage limits, log `Trace` and `Debug` level messages to a high-volume, low-cost data store. Consider limiting `Trace` and `Debug` to specific categories.
   - Logging at `Warning` through `Critical` levels should produce few log messages.
     - Costs and storage limits usually aren't a concern.
     - Few logs allow more flexibility in data store choices.
 - In development:
   - Set to `Warning`.
-  - Add `Trace` or `Information` messages when troubleshooting. To limit output, set `Trace` or `Information` only for the categories under investigation.
+  - Add `Trace` or `Debug` messages when troubleshooting. To limit output, set `Trace` or `Debug` only for the categories under investigation.
 
 The following JSON sets `Logging:Console:LogLevel:Microsoft:Information`:
 
@@ -285,22 +289,29 @@ The following JSON sets `Logging:Console:LogLevel:Microsoft:Information`:
 Each log can specify an *event identifier*, the <xref:Microsoft.Extensions.Logging.EventId> is a structure with an `Id` and optional `Name` readonly properties. The sample source code uses the `AppLogEvents` class to define event IDs:
 
 ```csharp
+using Microsoft.Extensions.Logging;
+
 internal static class AppLogEvents
 {
-    internal const int Create = 1000;
-    internal const int Read = 1001;
-    internal const int Update = 1002;
-    internal const int Delete = 1003;
+    internal EventId Create = new(1000, "Created");
+    internal EventId Read = new(1001, "Read");
+    internal EventId Update = new(1002, "Updated");
+    internal EventId Delete = new(1003, "Deleted");
 
+    // These are also valid EventId instances, as there's
+    // an implicit conversion from int to an EventId
     internal const int Details = 3000;
     internal const int Error = 3001;
 
-    internal const int ReadNotFound = 4000;
-    internal const int UpdateNotFound = 4001;
+    internal EventId ReadNotFound = 4000;
+    internal EventId UpdateNotFound = 4001;
 
     // ...
 }
 ```
+
+> [!TIP]
+> For more information on converting an `int` to an `EventId`, see [EventId.Implicit(Int32 to EventId) Operator](/dotnet/api/microsoft.extensions.logging.eventid.op_implicit).
 
 An event ID associates a set of events. For example, all logs related to reading values from a repository might be `1001`.
 
@@ -331,6 +342,9 @@ The preceding code creates a log message with the parameter values in sequence:
 Parameter values: param1, param2
 ```
 
+> [!NOTE]
+> Be mindful when using multiple placeholders within a single message template, as they're ordinal-based. The names are _not_ used to align the arguments to the placeholders.
+
 This approach allows logging providers to implement [semantic or structured logging](https://github.com/NLog/NLog/wiki/How-to-use-structured-logging). The arguments themselves are passed to the logging system, not just the formatted message template. This enables logging providers to store the parameter values as fields. Consider the following logger method:
 
 ```csharp
@@ -342,6 +356,32 @@ For example, when logging to Azure Table Storage:
 - Each Azure Table entity can have `ID` and `RunTime` properties.
 - Tables with properties simplify queries on logged data. For example, a query can find all logs within a particular `RunTime` range without having to parse the time out of the text message.
 
+### Log message template formatting
+
+Log message templates support placeholder formatting. Templates are free to specify [any valid format](../../standard/base-types/formatting-types.md) for the given type argument. For example, consider the following `Information` logger message template:
+
+```csharp
+_logger.LogInformation("Logged on {PlaceHolderName:MMMM dd, yyyy}", DateTimeOffset.UtcNow);
+// Logged on January 06, 2022
+```
+
+In the preceding example, the `DateTimeOffset` instance is the type that corresponds to the `PlaceHolderName` in the logger message template. This name can be anything as the values are ordinal-based. The `MMMM dd, yyyy` format is valid for the `DateTimeOffset` type.
+
+For more information on `DateTime` and `DateTimeOffset` formatting, see [Custom date and time format strings](../../standard/base-types/custom-date-and-time-format-strings.md).
+
+### Log message template formatting examples
+
+Log message templates allow placeholder formatting. The following examples show how to format a message template using the `{}` placeholder syntax. Additionally, an example of escaping the `{}` placeholder syntax is shown with its output. Finally, string interpolation with templating placeholders is also shown:
+
+```csharp
+logger.LogInformation("Number: {Number}", 1);               // Number: 1
+logger.LogInformation("{{Number}}: {Number}", 3);           // {Number}: 3
+logger.LogInformation($"{{{{Number}}}}: {{Number}}", 5);    // {Number}: 5
+```
+
+> [!TIP]
+> You should always use log message template formatting when logging. You should avoid string interpolation as it can cause performance issues.
+
 ## Log exceptions
 
 The logger methods have overloads that take an exception parameter:
@@ -351,7 +391,7 @@ public void Test(string id)
 {
     try
     {
-        if (id == "none")
+        if (id is "none")
         {
             throw new Exception("Default Id detected.");
         }
@@ -381,15 +421,11 @@ With the preceding setup, navigating to the privacy or home page produces many `
 The following code sets the default log level when the default log level is not set in configuration:
 
 ```csharp
-class Program
-{
-    static Task Main(string[] args) =>
-        CreateHostBuilder(args).Build().RunAsync();
+using IHost host = Host.CreateDefaultBuilder(args)
+    .ConfigureLogging(logging => logging.SetMinimumLevel(LogLevel.Warning))
+    .Build();
 
-    static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureLogging(logging => logging.SetMinimumLevel(LogLevel.Warning));
-}
+await host.RunAsync();
 ```
 
 ### Filter function
@@ -397,21 +433,16 @@ class Program
 A filter function is invoked for all providers and categories that don't have rules assigned to them by configuration or code:
 
 ```csharp
-class Program
-{
-    static Task Main(string[] args) =>
-        CreateHostBuilder(args).Build().RunAsync();
-
-    static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureLogging(logging =>
-                logging.AddFilter((provider, category, logLevel) =>
-                {
-                    return provider.Contains("ConsoleLoggerProvider")
-                        && (category.Contains("Example") || category.Contains("Microsoft"))
-                        && logLevel >= LogLevel.Information;
-                }));
-}
+await Host.CreateDefaultBuilder(args)
+    .ConfigureLogging(logging =>
+        logging.AddFilter((provider, category, logLevel) =>
+        {
+            return provider.Contains("ConsoleLoggerProvider")
+                && (category.Contains("Example") || category.Contains("Microsoft"))
+                && logLevel >= LogLevel.Information;
+        }))
+    .Build()
+    .RunAsync();
 ```
 
 The preceding code displays console logs when the category contains `Example` or `Microsoft` and the log level is `Information` or higher.
@@ -436,8 +467,12 @@ Use a scope by wrapping logger calls in a `using` block:
 public async Task<T> GetAsync<T>(string id)
 {
     T result;
+    var transactionId = Guid.NewGuid().ToString();
 
-    using (_logger.BeginScope("using block message"))
+    using (_logger.BeginScope(new List<KeyValuePair<string, object>>
+        {
+            new KeyValuePair<string, object>("TransactionId", transactionId),
+        }))
     {
         _logger.LogInformation(
             AppLogEvents.Read, "Reading value for {Id}", id);
@@ -461,17 +496,12 @@ The following JSON enables scopes for the console provider:
 The following code enables scopes for the console provider:
 
 ```csharp
-class Program
-{
-    static Task Main(string[] args) =>
-        CreateHostBuilder(args).Build().RunAsync();
-
-    static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureLogging((_, logging) =>
-                logging.ClearProviders()
-                    .AddConsole(options => options.IncludeScopes = true));
-}
+await Host.CreateDefaultBuilder(args)
+    .ConfigureLogging((_, logging) =>
+        logging.ClearProviders()
+            .AddConsole(options => options.IncludeScopes = true))
+    .Build()
+    .RunAsync();
 ```
 
 ## Non-host console app
@@ -479,23 +509,17 @@ class Program
 Logging code for apps without a [Generic Host](generic-host.md) differs in the way [providers are added](logging-providers.md#built-in-logging-providers) and [loggers are created](#create-logs). In a non-host console app, call the provider's `Add{provider name}` extension method while creating a `LoggerFactory`:
 
 ```csharp
-class Program
+using var loggerFactory = LoggerFactory.Create(builder =>
 {
-    static void Main(string[] args)
-    {
-        using var loggerFactory = LoggerFactory.Create(builder =>
-        {
-            builder
-                .AddFilter("Microsoft", LogLevel.Warning)
-                .AddFilter("System", LogLevel.Warning)
-                .AddFilter("LoggingConsoleApp.Program", LogLevel.Debug)
-                .AddConsole();
-        });
+    builder
+        .AddFilter("Microsoft", LogLevel.Warning)
+        .AddFilter("System", LogLevel.Warning)
+        .AddFilter("LoggingConsoleApp.Program", LogLevel.Debug)
+        .AddConsole();
+});
 
-        ILogger logger = loggerFactory.CreateLogger<Program>();
-        logger.LogInformation("Example log message");
-    }
-}
+ILogger logger = loggerFactory.CreateLogger<Program>();
+logger.LogInformation("Example log message");
 ```
 
 The `loggerFactory` object is used to create an <xref:Microsoft.Extensions.Logging.ILogger> instance.
@@ -505,24 +529,41 @@ The `loggerFactory` object is used to create an <xref:Microsoft.Extensions.Loggi
 The following code logs in `Main` by getting an `ILogger` instance from DI after building the host:
 
 ```csharp
-using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-class Program
-{
-    static Task Main(string[] args)
-    {
-        IHost host = Host.CreateDefaultBuilder(args).Build();
+IHost host = Host.CreateDefaultBuilder(args).Build();
 
-        var logger = host.Services.GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("Host created.");
+var logger = host.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("Host created.");
 
-        return host.RunAsync();
-    }
-}
+await host.RunAsync();
+```
+
+The preceding code relies on two NuGet packages:
+
+- [Microsoft.Extensions.Hosting](https://www.nuget.org/packages/Microsoft.Extensions.Hosting)
+- [Microsoft.Extensions.Logging](https://www.nuget.org/packages/Microsoft.Extensions.Logging)
+
+Its project file would look similar to the following:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+  </ItemGroup>
+
+</Project>
 ```
 
 ### No asynchronous logger methods
@@ -547,18 +588,13 @@ The preferred approach for setting log filter rules is by using [Configuration](
 The following example shows how to register filter rules in code:
 
 ```csharp
-class Program
-{
-    static Task Main(string[] args) =>
-        CreateHostBuilder(args).Build().RunAsync();
-
-    static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureLogging(logging =>
-               logging.AddFilter("System", LogLevel.Debug)
-                  .AddFilter<DebugLoggerProvider>("Microsoft", LogLevel.Information)
-                  .AddFilter<ConsoleLoggerProvider>("Microsoft", LogLevel.Trace));
-}
+await Host.CreateDefaultBuilder(args)
+    .ConfigureLogging(logging =>
+        logging.AddFilter("System", LogLevel.Debug)
+            .AddFilter<DebugLoggerProvider>("Microsoft", LogLevel.Information)
+            .AddFilter<ConsoleLoggerProvider>("Microsoft", LogLevel.Trace))
+    .Build()
+    .RunAsync();
 ```
 
 `logging.AddFilter("System", LogLevel.Debug)` specifies the `System` category and log level `Debug`. The filter is applied to all providers because a specific provider was not configured.
@@ -575,4 +611,4 @@ class Program
 - [Implement a custom logging provider in .NET](custom-logging-provider.md)
 - [Console log formatting](console-log-formatter.md)
 - [High-performance logging in .NET](high-performance-logging.md)
-- Logging bugs should be created in the [github.com/dotnet/extensions](https://github.com/dotnet/extensions/issues) repo
+- Logging bugs should be created in the [github.com/dotnet/runtime](https://github.com/dotnet/runtime//issues) repo

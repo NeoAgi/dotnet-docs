@@ -6,7 +6,7 @@ ms.topic: reference
 ---
 # Dump collection and analysis utility (dotnet-dump)
 
-**This article applies to:** ✔️ .NET Core 3.0 SDK and later versions
+**This article applies to:** ✔️ `dotnet-dump` version 3.0.47001 and later versions
 
 > [!NOTE]
 > `dotnet-dump` for macOS is only supported with .NET 5 and later versions.
@@ -29,9 +29,9 @@ There are two ways to download and install `dotnet-dump`:
 
   | OS  | Platform |
   | --- | -------- |
-  | Windows | [x86](https://aka.ms/dotnet-dump/win-x86) \| [x64](https://aka.ms/dotnet-dump/win-x64) \| [arm](https://aka.ms/dotnet-dump/win-arm) \| [arm-x64](https://aka.ms/dotnet-dump/win-arm64) |
+  | Windows | [x86](https://aka.ms/dotnet-dump/win-x86) \| [x64](https://aka.ms/dotnet-dump/win-x64) \| [Arm](https://aka.ms/dotnet-dump/win-arm) \| [Arm-x64](https://aka.ms/dotnet-dump/win-arm64) |
   | macOS   | [x64](https://aka.ms/dotnet-dump/osx-x64) |
-  | Linux   | [x64](https://aka.ms/dotnet-dump/linux-x64) \| [arm](https://aka.ms/dotnet-dump/linux-arm) \| [arm64](https://aka.ms/dotnet-dump/linux-arm64) \| [musl-x64](https://aka.ms/dotnet-dump/linux-musl-x64) \| [musl-arm64](https://aka.ms/dotnet-dump/linux-musl-arm64) |
+  | Linux   | [x64](https://aka.ms/dotnet-dump/linux-x64) \| [Arm](https://aka.ms/dotnet-dump/linux-arm) \| [Arm64](https://aka.ms/dotnet-dump/linux-arm64) \| [musl-x64](https://aka.ms/dotnet-dump/linux-musl-x64) \| [musl-Arm64](https://aka.ms/dotnet-dump/linux-musl-arm64) |
 
 > [!NOTE]
 > To use `dotnet-dump` on an x86 app, you need a corresponding x86 version of the tool.
@@ -44,7 +44,7 @@ dotnet-dump [-h|--help] [--version] <command>
 
 ## Description
 
-The `dotnet-dump` global tool is a way to collect and analyze Windows and Linux dumps without any native debugger involved like `lldb` on Linux. This tool is important on platforms like Alpine Linux where a fully working `lldb` isn't available. The `dotnet-dump` tool allows you to run SOS commands to analyze crashes and the garbage collector (GC), but it isn't a native debugger so things like displaying native stack frames aren't supported.
+The `dotnet-dump` global tool is a way to collect and analyze dumps on Windows, Linux, and macOS without any native debugger involved. This tool is important on platforms like Alpine Linux where a fully working `lldb` isn't available. The `dotnet-dump` tool allows you to run SOS commands to analyze crashes and the garbage collector (GC), but it isn't a native debugger so things like displaying native stack frames aren't supported.
 
 ## Options
 
@@ -62,6 +62,7 @@ The `dotnet-dump` global tool is a way to collect and analyze Windows and Linux 
 | ------------------------------------------- |
 | [dotnet-dump collect](#dotnet-dump-collect) |
 | [dotnet-dump analyze](#dotnet-dump-analyze) |
+| [dotnet-dump ps](#dotnet-dump-ps)           |
 
 ## dotnet-dump collect
 
@@ -70,7 +71,7 @@ Captures a dump from a process.
 ### Synopsis
 
 ```console
-dotnet-dump collect [-h|--help] [-p|--process-id] [-n|--name] [--type] [-o|--output] [--diag]
+dotnet-dump collect [-h|--help] [-p|--process-id] [-n|--name] [--type] [-o|--output] [--diag] [--crashreport]
 ```
 
 ### Options
@@ -99,18 +100,22 @@ dotnet-dump collect [-h|--help] [-p|--process-id] [-n|--name] [--type] [-o|--out
 
 - **`-o|--output <output_dump_path>`**
 
-  The full path and file name where the collected dump should be written.
+  The full path and file name where the collected dump should be written. Ensure that the user under which the dotnet process is running has write permissions to the specified directory.
 
   If not specified:
 
   - Defaults to *.\dump_YYYYMMDD_HHMMSS.dmp* on Windows.
-  - Defaults to *./core_YYYYMMDD_HHMMSS* on Linux.
+  - Defaults to *./core_YYYYMMDD_HHMMSS* on Linux and macOS.
 
   YYYYMMDD is Year/Month/Day and HHMMSS is Hour/Minute/Second.
 
 - **`--diag`**
 
   Enables dump collection diagnostic logging.
+  
+- **`--crashreport`**
+
+  Enables crash report generation.
 
 > [!NOTE]
 > On Linux and macOS, this command expects the target application and `dotnet-dump` to share the same `TMPDIR` environment variable. Otherwise, the command will time out.
@@ -142,45 +147,67 @@ dotnet-dump analyze <dump_path> [-h|--help] [-c|--command]
 
 ### Analyze SOS commands
 
-| Command                             | Function                                                                                      |
-| ----------------------------------- | --------------------------------------------------------------------------------------------- |
-| `soshelp|help`                      | Displays all available commands                                                               |
-| `soshelp|help <command>`            | Displays the specified command.                                                               |
-| `exit|quit`                         | Exits interactive mode.                                                                       |
-| `clrstack <arguments>`              | Provides a stack trace of managed code only.                                                  |
-| `clrthreads <arguments>`            | Lists the managed threads running.                                                            |
-| `dumpasync <arguments>`             | Displays information about async state machines on the garbage-collected heap.                |
-| `dumpassembly <arguments>`          | Displays details about the assembly at the specified address.                                 |
-| `dumpclass <arguments>`             | Displays information about the `EEClass` structure at the specified address.                  |
-| `dumpdelegate <arguments>`          | Displays information about the delegate at the specified address.                             |
-| `dumpdomain <arguments>`            | Displays information all the AppDomains and all assemblies within the specified domain.       |
-| `dumpheap <arguments>`              | Displays info about the garbage-collected heap and collection statistics about objects.       |
-| `dumpil <arguments>`                | Displays the Microsoft intermediate language (MSIL) that is associated with a managed method. |
-| `dumplog <arguments>`               | Writes the contents of an in-memory stress log to the specified file.                         |
-| `dumpmd <arguments>`                | Displays information about the `MethodDesc` structure at the specified address.               |
-| `dumpmodule <arguments>`            | Displays information about the module at the specified address.                               |
-| `dumpmt <arguments>`                | Displays information about the `MethodTable` at the specified address.                        |
-| `dumpobj <arguments>`               | Displays info about the object at the specified address.                                      |
-| `dso|dumpstackobjects <arguments>`  | Displays all managed objects found within the bounds of the current stack.                    |
-| `eeheap <arguments>`                | Displays info about process memory consumed by internal runtime data structures.              |
-| `finalizequeue <arguments>`         | Displays all objects registered for finalization.                                             |
-| `gcroot <arguments>`                | Displays info about references (or roots) to the object at the specified address.             |
-| `gcwhere <arguments>`               | Displays the location in the GC heap of the argument passed in.                               |
-| `ip2md <arguments>`                 | Displays the `MethodDesc` structure at the specified address in JIT code.                     |
-| `histclear <arguments>`             | Releases any resources used by the family of `hist*` commands.                                |
-| `histinit <arguments>`              | Initializes the SOS structures from the stress log saved in the debuggee.                     |
-| `histobj <arguments>`               | Displays the garbage collection stress log relocations related to `<arguments>`.              |
-| `histobjfind <arguments>`           | Displays all the log entries that reference the object at the specified address.              |
-| `histroot <arguments>`              | Displays information related to both promotions and relocations of the specified root.        |
-| `lm|modules`                        | Displays the native modules in the process.                                                   |
-| `name2ee <arguments>`               | Displays the `MethodTable` and `EEClass` structures for the `<argument>`.                     |
-| `pe|printexception <arguments>`     | Displays any object derived from the <xref:System.Exception> class for the `<argument>`.      |
-| `setsymbolserver <arguments>`       | Enables the symbol server support                                                             |
-| `syncblk <arguments>`               | Displays the SyncBlock holder info.                                                           |
-| `threads|setthread <threadid>`      | Sets or displays the current thread ID for the SOS commands.                                  |
+| Command                                             | Function                                                                                      |
+|-----------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| `soshelp` or `help`                                 | Displays all available commands                                                               |
+| `soshelp <command>` or `help <command>`             | Displays the specified command.                                                               |
+| `exit` or `quit`                                    | Exits interactive mode.                                                                       |
+| `clrstack <arguments>`                              | Provides a stack trace of managed code only.                                                  |
+| `clrthreads <arguments>`                            | Lists the managed threads running.                                                            |
+| `dumpasync <arguments>`                             | Displays information about async state machines on the garbage-collected heap.                |
+| `dumpassembly <arguments>`                          | Displays details about the assembly at the specified address.                                 |
+| `dumpclass <arguments>`                             | Displays information about the `EEClass` structure at the specified address.                  |
+| `dumpdelegate <arguments>`                          | Displays information about the delegate at the specified address.                             |
+| `dumpdomain <arguments>`                            | Displays information all the AppDomains and all assemblies within the specified domain.       |
+| `dumpheap <arguments>`                              | Displays info about the garbage-collected heap and collection statistics about objects.       |
+| `dumpil <arguments>`                                | Displays the Microsoft intermediate language (MSIL) that is associated with a managed method. |
+| `dumplog <arguments>`                               | Writes the contents of an in-memory stress log to the specified file.                         |
+| `dumpmd <arguments>`                                | Displays information about the `MethodDesc` structure at the specified address.               |
+| `dumpmodule <arguments>`                            | Displays information about the module at the specified address.                               |
+| `dumpmt <arguments>`                                | Displays information about the `MethodTable` at the specified address.                        |
+| `dumpobj <arguments>`                               | Displays info about the object at the specified address.                                      |
+| `dso <arguments>` or `dumpstackobjects <arguments>` | Displays all managed objects found within the bounds of the current stack.                    |
+| `eeheap <arguments>`                                | Displays info about process memory consumed by internal runtime data structures.              |
+| `finalizequeue <arguments>`                         | Displays all objects registered for finalization.                                             |
+| `gcroot <arguments>`                                | Displays info about references (or roots) to the object at the specified address.             |
+| `gcwhere <arguments>`                               | Displays the location in the GC heap of the argument passed in.                               |
+| `ip2md <arguments>`                                 | Displays the `MethodDesc` structure at the specified address in JIT code.                     |
+| `histclear <arguments>`                             | Releases any resources used by the family of `hist*` commands.                                |
+| `histinit <arguments>`                              | Initializes the SOS structures from the stress log saved in the debuggee.                     |
+| `histobj <arguments>`                               | Displays the garbage collection stress log relocations related to `<arguments>`.              |
+| `histobjfind <arguments>`                           | Displays all the log entries that reference the object at the specified address.              |
+| `histroot <arguments>`                              | Displays information related to both promotions and relocations of the specified root.        |
+| `lm` or `modules`                                   | Displays the native modules in the process.                                                   |
+| `name2ee <arguments>`                               | Displays the `MethodTable` and `EEClass` structures for the `<argument>`.                     |
+| `pe <arguments>` or `printexception <arguments>`    | Displays any object derived from the <xref:System.Exception> class for the `<argument>`.      |
+| `setsymbolserver <arguments>`                       | Enables the symbol server support                                                             |
+| `syncblk <arguments>`                               | Displays the SyncBlock holder info.                                                           |
+| `threads <threadid>` or `setthread <threadid>`      | Sets or displays the current thread ID for the SOS commands.                                  |
 
 > [!NOTE]
 > Additional details can be found in [SOS Debugging Extension for .NET](sos-debugging-extension.md).
+
+## dotnet-dump ps
+
+ Lists the dotnet processes that dumps can be collected from.
+ `dotnet-dump` version 6.0.320703 and later versions also display the command-line arguments that each process was started with, if available.
+
+### Synopsis
+
+```console
+dotnet-dump ps [-h|--help]
+```
+
+### Example
+
+Suppose you start a long-running app using the command ```dotnet run --configuration Release```. In another window, you run the ```dotnet-dump ps``` command. The output you'll see is as follows. The command-line arguments, if any, are shown in `dotnet-dump` version 6.0.320703 and later.
+
+```console
+> dotnet-dump ps
+  
+  21932 dotnet     C:\Program Files\dotnet\dotnet.exe   run --configuration Release
+  36656 dotnet     C:\Program Files\dotnet\dotnet.exe
+```
 
 ## Using `dotnet-dump`
 
@@ -240,15 +267,9 @@ StackTraceString: <none>
 HResult: 80131604
 ```
 
-## Special instructions for Docker
+## Troubleshooting dump collection issues
 
-If you're running under Docker, dump collection requires `SYS_PTRACE` capabilities (`--cap-add=SYS_PTRACE` or `--privileged`).
-
-On Microsoft .NET SDK Linux Docker images, some `dotnet-dump` commands can throw the following exception:
-
-> Unhandled exception: System.DllNotFoundException: Unable to load shared library 'libdl.so' or one of its dependencies' exception.
-
-To work around this problem, install the "libc6-dev" package.
+Dump collection requires the process to be able to call `ptrace`. If you are facing issues collecting dumps, the environment you are running on may be configured to restrict such calls. See our [Dumps: FAQ](faq-dumps.yml) for troubleshooting tips and potential solutions to common issues.
 
 ## See also
 

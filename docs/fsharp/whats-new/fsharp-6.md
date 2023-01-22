@@ -62,7 +62,7 @@ F# 6 allows the syntax `expr[idx]` for indexing and slicing collections.
 
 Up to and including F# 5, F# has used `expr.[idx]` as indexing syntax. Allowing the use of `expr[idx]` is based on repeated feedback from those learning F# or seeing F# for the first time that the use of dot-notation indexing comes across as an unnecessary divergence from standard industry practice.
 
-This is not a breaking change because by default, no warnings are emitted on the use of `expr.[idx]`. However, some informational messages that suggest code clarifications are emitted. You can optionally active further informational messages as well. For example, you can activate an optional informational warning (`/warnon:3566`) to start reporting uses of the `expr.[idx]` notation. For more information, see [Indexer Notation]( https://aka.ms/fsharp-index-notation).
+This is not a breaking change because by default, no warnings are emitted on the use of `expr.[idx]`. However, some informational messages that suggest code clarifications are emitted. You can optionally activate further informational messages as well. For example, you can activate an optional informational warning (`/warnon:3566`) to start reporting uses of the `expr.[idx]` notation. For more information, see [Indexer Notation]( https://aka.ms/fsharp-index-notation).
 
 In new code, we recommend the systematic use of `expr[idx]` as the indexing syntax.
 
@@ -86,7 +86,7 @@ This feature implements [F# RFC FS-1039](https://github.com/fsharp/fslang-design
 
 ## Overloaded custom operations in computation expressions
 
-F# 6 lets you consume [interfaces with default implementations](../../csharp/whats-new/tutorials/default-interface-methods-versions.md).
+F# 6 lets you consume [interfaces with default implementations](../../csharp/tutorials/default-interface-methods-versions.md).
 
 Consider the following use of a computation expression builder `content`:
 
@@ -280,7 +280,10 @@ let purchaseOrder = XElement.Load("PurchaseOrder.xml")
 let partNos = purchaseOrder.Descendants("Item")
 ```
 
-You may optionally enable the warning `/warnon:3390` to show a warning at every point implicit numeric widening is used, as described in [Optional warnings for implicit conversions](#optional-warnings-for-implicit-conversions).
+You may optionally enable the warning `/warnon:3395` to show a warning at every point `op_Implicit` conversions widening is used at method arguments, as described in [Optional warnings for implicit conversions](#optional-warnings-for-implicit-conversions).
+
+> [!NOTE]
+> In the first release of F# 6, this warning number was `/warnon:3390`. Due to a conflict, the warning number was later updated to `/warnon:3395`.
 
 ### Optional warnings for implicit conversions
 
@@ -288,10 +291,10 @@ Type-directed and implicit conversions can interact poorly with type inference a
 
 * `/warnon:3388` (additional implicit upcast)
 * `/warnon:3389` (implicit numeric widening)
-* `/warnon:3390` (op_Implicit at method arguments)
 * `/warnon:3391` (op_Implicit at non-method arguments, on by default)
+* `/warnon:3395` (op_Implicit at method arguments)
 
-If your team wants to ban all uses of implicit conversions, you can also specify `/warnaserror:3388`, `/warnaserror:3389`, `/warnaserror:3390`, and `/warnaserror:3391`.
+If your team wants to ban all uses of implicit conversions, you can also specify `/warnaserror:3388`, `/warnaserror:3389`, `/warnaserror:3391`, and `/warnaserror:3395`.
 
 ## Formatting for binary numbers
 
@@ -365,7 +368,7 @@ This feature implements [F# RFC FS-1098](https://github.com/fsharp/fslang-design
 
 ## Resumable code
 
-The `task {…}` support of F# 6 is built on a foundation called *resumable code* [RFC FS-1087](https://github.com/fsharp/fslang-design/blob/main/preview/FS-1087-resumable-code.md). Resumable code is a technical feature that can be used to build many kinds of high-performance asynchronous and yielding state machines.
+The `task {…}` support of F# 6 is built on a foundation called *resumable code* [RFC FS-1087](https://github.com/fsharp/fslang-design/blob/main/FSharp-6.0/FS-1087-resumable-code.md). Resumable code is a technical feature that can be used to build many kinds of high-performance asynchronous and yielding state machines.
 
 ## Additional collection functions
 
@@ -472,7 +475,7 @@ For example, consider the following F# 5 code:
 let r = ref 0
 
 let doSomething() =
-    printfn "doing something”
+    printfn "doing something"
     r := !r + 1
 ```
 
@@ -482,7 +485,7 @@ First, reference cells are rarely needed in modern F# coding, as `let mutable` c
 let mutable r = 0
 
 let doSomething() =
-    printfn "doing something”
+    printfn "doing something"
     r <- r + 1
 ```
 
@@ -492,7 +495,7 @@ If you use reference cells, F# 6 emits an informational warning asking you to ch
 let r = ref 0
 
 let doSomething() =
-    printfn "doing something”
+    printfn "doing something"
     r.Value <- r.Value + 1
 ```
 
@@ -502,7 +505,7 @@ This feature implements [F# RFC FS-1111](https://github.com/fsharp/fslang-design
 
 ## F# tooling: .NET 6 the default for scripting in Visual Studio
 
-If you open or execute an F# Script (`.fsx`) in Visual Studio, by default the script will be analyzed and executed using .NET 6 with 64-bit execution. This functionality has been in preview in the later releases of Visual Studio 2019 and is now enabled by default.
+If you open or execute an F# Script (`.fsx`) in Visual Studio, by default the script will be analyzed and executed using .NET 6 with 64-bit execution. This functionality was in preview in the later releases of Visual Studio 2019 and is now enabled by default.
 
 To enable .NET Framework scripting, select **Tools** > **Options** > **F# Tools** > **F# Interactive**. Set **Use .NET Core Scripting** to **false**, and then restart the F# Interactive window. This setting affects both script editing and script execution. To enable 32-bit execution for .NET Framework scripting, also set **64-bit F# Interactive** to **false**. There is no 32-bit option for .NET Core scripting.
 
@@ -540,7 +543,7 @@ Now the script can be executed directly with `script.fsx`. You can combine this 
 ```
 
 > [!NOTE]
-> This setting is ignored by editing tools, which will analyse the script assuming latest language version.
+> This setting is ignored by editing tools, which will analyze the script assuming latest language version.
 
 ## Removing legacy features
 

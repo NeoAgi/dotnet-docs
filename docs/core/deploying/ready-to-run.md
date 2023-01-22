@@ -79,11 +79,11 @@ When compiling an application with ReadyToRun, profilers may require symbols for
 </PropertyGroup>
 ```
 
-These symbols will be placed in the publish directory and for Windows will have a file extension of .ni.pdb, and for Linux will have a file extension of .r2rmap. These files are not generally redistributed to end customers, but instead would typically be stored in a symbol server. In general these symbols are useful for debugging performance issues related to startup of applications, as [Tiered Compilation](../run-time-config/compilation.md#tiered-compilation) will replace the ReadyToRun generated code with dynamically generated code. However, if attempting to profile an application that disables [Tiered Compilation](../run-time-config/compilation.md#tiered-compilation) the symbols will be useful.
+These symbols will be placed in the publish directory and for Windows will have a file extension of .ni.pdb, and for Linux will have a file extension of .r2rmap. These files are not generally redistributed to end customers, but instead would typically be stored in a symbol server. In general these symbols are useful for debugging performance issues related to startup of applications, as [Tiered Compilation](../runtime-config/compilation.md#tiered-compilation) will replace the ReadyToRun generated code with dynamically generated code. However, if attempting to profile an application that disables [Tiered Compilation](../runtime-config/compilation.md#tiered-compilation) the symbols will be useful.
 
 ## Composite ReadyToRun
 
-Normal ReadyToRun compilation produces binaries that can be serviced and manipulated individually. Starting in .NET 6, support for Composite ReadyToRun compilation has been added. Composite ReadyToRun compiles a set of assemblies that must be distributed together. This has the advantage that the compiler is able to perform better optimizations and reduces the set of methods that cannot be compiled via the ReadyToRun process. However, as a tradeoff, compilation speed is significantly decreased, and the overall file size of the application is significantly increased. Due to these tradeoffs, use of Composite ReadyToRun is only recommended for applications that disable [Tiered Compilation](../run-time-config/compilation.md#tiered-compilation) or applications running on Linux that are seeking the best startup time with [self-contained](index.md#publish-self-contained) deployment. To enable composite ReadyToRun compilation, specify the `<PublishReadyToRunComposite>` property.
+Normal ReadyToRun compilation produces binaries that can be serviced and manipulated individually. Starting in .NET 6, support for Composite ReadyToRun compilation has been added. Composite ReadyToRun compiles a set of assemblies that must be distributed together. This has the advantage that the compiler is able to perform better optimizations and reduces the set of methods that cannot be compiled via the ReadyToRun process. However, as a tradeoff, compilation speed is significantly decreased, and the overall file size of the application is significantly increased. Due to these tradeoffs, use of Composite ReadyToRun is only recommended for applications that disable [Tiered Compilation](../runtime-config/compilation.md#tiered-compilation) or applications running on Linux that are seeking the best startup time with [self-contained](index.md#publish-self-contained) deployment. To enable composite ReadyToRun compilation, specify the `<PublishReadyToRunComposite>` property.
 
 ```xml
 <PropertyGroup>
@@ -102,21 +102,21 @@ Supported compilation targets are described in the table below when targeting .N
 
 | SDK platform | Supported target platforms |
 | ------------ | --------------------------- |
-| Windows X64  | Windows (X86, X64, ARM64), Linux (X64, ARM32, ARM64), macOS (X64, ARM64) |
-| Windows X86  | Windows (X86), Linux (ARM32) |
-| Linux X64    | Linux (X64, ARM32, ARM64), macOS (X64, ARM64) |
-| Linux ARM32  | Linux ARM32 |
-| Linux ARM64  | Linux (X64, ARM32, ARM64), macOS (X64, ARM64) |
-| macOS X64    | Linux (X64, ARM32, ARM64), macOS (X64, ARM64) |
-| macOS ARM64    | Linux (X64, ARM32, ARM64), macOS (X64, ARM64) |
+| Windows X64  | Windows (X86, X64, Arm64), Linux (X64, Arm32, Arm64), macOS (X64, Arm64) |
+| Windows X86  | Windows (X86), Linux (Arm32) |
+| Linux X64    | Linux (X64, Arm32, Arm64), macOS (X64, Arm64) |
+| Linux Arm32  | Linux Arm32 |
+| Linux Arm64  | Linux (X64, Arm32, Arm64), macOS (X64, Arm64) |
+| macOS X64    | Linux (X64, Arm32, Arm64), macOS (X64, Arm64) |
+| macOS Arm64    | Linux (X64, Arm32, Arm64), macOS (X64, Arm64) |
 
 Supported compilation targets are described in the table below when targeting .NET 5 and below.
 
 | SDK platform | Supported target platforms |
 | ------------ | --------------------------- |
-| Windows X64  | Windows X86, Windows X64, Windows ARM64 |
-| Windows X86  | Windows X86, Windows ARM32 |
-| Linux X64    | Linux X86, Linux X64, Linux ARM32, Linux ARM64 |
-| Linux ARM32  | Linux ARM32 |
-| Linux ARM64  | Linux ARM64 |
+| Windows X64  | Windows X86, Windows X64, Windows Arm64 |
+| Windows X86  | Windows X86, Windows Arm32 |
+| Linux X64    | Linux X86, Linux X64, Linux Arm32, Linux Arm64 |
+| Linux Arm32  | Linux Arm32 |
+| Linux Arm64  | Linux Arm64 |
 | macOS X64    | macOS X64 |

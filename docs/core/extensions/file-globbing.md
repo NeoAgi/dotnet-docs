@@ -1,5 +1,5 @@
 ---
-title: File globbing in .NET
+title: File globbing
 author: IEvangelist
 description: Learn how to use file globbing in .NET to match various files with the same partial names, extensions, or segments.
 ms.author: dapine
@@ -169,6 +169,7 @@ The patterns that are specified in the `AddExclude` and `AddInclude` methods can
     | Value | Description |
     | --- | --- |
     | `**/*` | All files in any subdirectory. |
+    | `dir/` | All files in any subdirectory under 'dir/'. |
     | `dir/**/*` | All files in any subdirectory under 'dir/'. |
 
 - Relative paths.
