@@ -43,9 +43,9 @@ A *breakpoint* temporarily interrupts the execution of the application before th
 
 The breakpoint is located after a `Console.ReadLine` method call. The **Debug Console** doesn't accept terminal input for a running program. To handle terminal input while debugging, you can use the integrated terminal (one of the Visual Studio Code windows) or an external terminal. For this tutorial, you use the integrated terminal.
 
-1. Open *.vscode/launch.json*.
+1. The project folder contains a *.vscode* folder. Open the *launch.json* file that's in the *.vscode* folder.
 
-1. Change the `console` setting from `internalConsole` to `integratedTerminal`:
+1. In *launch.json*, change the `console` setting from `internalConsole` to `integratedTerminal`:
 
    ```json
    "console": "integratedTerminal",
@@ -205,7 +205,7 @@ dotnet run --configuration Release
 
 ## Additional resources
 
-* [Debugging in Visual Studio Code](https://code.visualstudio.com/docs/editor/debugging)
+- [Debugging in Visual Studio Code](https://code.visualstudio.com/docs/editor/debugging)
 
 ## Next steps
 
@@ -414,7 +414,7 @@ dotnet run --configuration Release
 
 ## Additional resources
 
-* [Debugging in Visual Studio Code](https://code.visualstudio.com/docs/editor/debugging)
+- [Debugging in Visual Studio Code](https://code.visualstudio.com/docs/editor/debugging)
 
 ## Next steps
 
@@ -422,11 +422,5 @@ In this tutorial, you used Visual Studio Code debugging tools. In the next tutor
 
 > [!div class="nextstepaction"]
 > [Publish a .NET console application using Visual Studio Code](publishing-with-visual-studio-code.md)
-
-::: zone-end
-
-::: zone pivot="dotnet-core-3-1,dotnet-5-0"
-
-This tutorial is only available for .NET 6 and .NET 7. Select one of those options at the top of the page.
 
 ::: zone-end

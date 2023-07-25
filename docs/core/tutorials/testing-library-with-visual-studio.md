@@ -195,8 +195,8 @@ Visual Studio starts the test project with the debugger attached. Execution will
 
 ## Additional resources
 
-* [Unit test basics - Visual Studio](/visualstudio/test/unit-test-basics)
-* [Unit testing in .NET](../testing/index.md)
+- [Unit test basics - Visual Studio](/visualstudio/test/unit-test-basics)
+- [Unit testing in .NET](../testing/index.md)
 
 ## Next steps
 
@@ -214,11 +214,5 @@ A library doesn't have to be distributed as a package. It can be bundled with a 
 
 > [!div class="nextstepaction"]
 > [Publish a .NET console application using Visual Studio](publishing-with-visual-studio.md)
-
-::: zone-end
-
-::: zone pivot="dotnet-core-3-1,dotnet-5-0"
-
-This tutorial is only available for .NET 6 and .NET 7. Select one of those options at the top of the page.
 
 ::: zone-end

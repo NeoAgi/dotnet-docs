@@ -3,7 +3,7 @@ title: .NET default templates for dotnet new
 description: The information about dotnet new templates shipped with dotnet SDK.
 ms.custom: updateeachrelease
 no-loc: [Blazor, WebAssembly]
-ms.date: 07/28/2022
+ms.date: 05/31/2023
 ---
 # .NET default templates for dotnet new
 
@@ -43,9 +43,9 @@ The following table shows the templates that come pre-installed with the .NET SD
 | ASP.NET Core Web App                         | [`webapp, razor`](#web-options)       | [C#]         | Web/MVC/Razor Pages                   | 2.2, 2.0         |
 | ASP.NET Core with Angular                    | [`angular`](#spa)                     | [C#]         | Web/MVC/SPA                           | 2.0              |
 | ASP.NET Core with React.js                   | [`react`](#spa)                       | [C#]         | Web/MVC/SPA                           | 2.0              |
-| ASP.NET Core with React.js and Redux         | [`reactredux`](#reactredux)           | [C#]         | Web/MVC/SPA                           | 2.0              |
 | Razor Class Library                          | [`razorclasslib`](#razorclasslib)     | [C#]         | Web/Razor/Library/Razor Class Library | 2.1              |
 | ASP.NET Core Web API                         | [`webapi`](#webapi)                   | [C#], F#     | Web/WebAPI                            | 1.0              |
+| ASP.NET Core API                             | [`api`](#api)                         | [C#]         | Web/API                               | 8.0              |
 | ASP.NET Core gRPC Service                    | [`grpc`](#web-others)                 | [C#]         | Web/gRPC                              | 3.0              |
 | dotnet gitignore file                        | `gitignore`                           |              | Config                                | 3.0              |
 | global.json file                             | [`globaljson`](#globaljson)           |              | Config                                | 2.0              |
@@ -704,6 +704,36 @@ The ability to create a project for an earlier TFM depends on having that versio
 
 ***
 
+## `api`
+
+- **`--aot`**
+
+  Enable publish using AOT. For more information, see [Native AOT deployment](/dotnet/core/deploying/native-aot) and [The API template](/aspnet/core/fundamentals/native-aot#the-api-template).
+
+- **`--exclude-launch-settings`**
+
+  Excludes *launchSettings.json* from the generated template.
+
+- **`-f|--framework <FRAMEWORK>`**
+
+  Specifies the [framework](../../standard/frameworks.md) to target.
+
+  The following table lists the default values according to the SDK version number you're using:
+
+  | SDK version | Default value   |
+  |-------------|-----------------|
+  | 8.0         | `net8.0`        |
+
+- **`--no-restore`**
+
+  Doesn't execute an implicit restore during project creation.
+
+- **`--use-program-main`**
+
+  If specified, an explicit `Program` class and `Main` method will be used instead of top-level statements. Available since .NET SDK 6.0.300. Default value: `false`.
+
+***
+
 ## `webapi`
 
 - **`-au|--auth <AUTHENTICATION_TYPE>`**
@@ -719,7 +749,7 @@ The ability to create a project for an earlier TFM depends on having that versio
 
   The Azure Active Directory B2C instance to connect to. Use with `IndividualB2C` authentication. The default value is `https://login.microsoftonline.com/tfp/`.
 
-- **`-minimal`**
+- **`-minimal|--use-minimal-apis`**
 
   Create a project that uses the [ASP.NET Core minimal API](/aspnet/core/fundamentals/minimal-apis).
 
@@ -751,9 +781,13 @@ The ability to create a project for an earlier TFM depends on having that versio
 
   Excludes *launchSettings.json* from the generated template.
 
+- **`--no-openapi`**
+
+  Turns off OpenAPI (Swagger) support. `AddSwaggerGen`, `UseSwagger`, and `UseSwaggerUI` aren't called.
+
 - **`--no-https`**
 
-  Turns off HTTPS. `app.UseHsts` and `app.UseHttpsRedirection` aren't added to `Startup.Configure`. This option only applies if `IndividualB2C` or `SingleOrg` aren't being used for authentication.
+  Turns off HTTPS. No *https* launch profile is created in `launchSettings.json`. `app.UseHsts` and `app.UseHttpsRedirection` aren't called in *Program.cs*/*Startup.cs*. This option only applies if `IndividualB2C` or `SingleOrg` aren't being used for authentication.
 
 - **`-uld|--use-local-db`**
 
@@ -767,6 +801,7 @@ The ability to create a project for an earlier TFM depends on having that versio
 
   | SDK version | Default value   |
   |-------------|-----------------|
+  | 7.0         | `net7.0`        |
   | 6.0         | `net6.0`        |
   | 5.0         | `net5.0`        |
   | 3.1         | `netcoreapp3.1` |

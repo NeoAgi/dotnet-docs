@@ -170,7 +170,7 @@ Visual Studio Code starts the test project with the debugger attached. Execution
 
 ## Additional resources
 
-* [Unit testing in .NET](../testing/index.md)
+- [Unit testing in .NET](../testing/index.md)
 
 ## Next steps
 
@@ -354,7 +354,7 @@ Visual Studio Code starts the test project with the debugger attached. Execution
 
 ## Additional resources
 
-* [Unit testing in .NET](../testing/index.md)
+- [Unit testing in .NET](../testing/index.md)
 
 ## Next steps
 
@@ -372,11 +372,5 @@ A library doesn't have to be distributed as a package. It can be bundled with a 
 
 > [!div class="nextstepaction"]
 > [Publish a .NET console application using Visual Studio Code](publishing-with-visual-studio-code.md)
-
-::: zone-end
-
-::: zone pivot="dotnet-core-3-1,dotnet-5-0"
-
-This tutorial is only available for .NET 6 and .NET 7. Select one of those options at the top of the page.
 
 ::: zone-end

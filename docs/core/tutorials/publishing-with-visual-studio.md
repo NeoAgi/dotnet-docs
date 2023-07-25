@@ -65,23 +65,23 @@ In the following steps, you'll look at the files created by the publish process.
 
    As the image shows, the published output includes the following files:
 
-   * *HelloWorld.deps.json*
+   - *HelloWorld.deps.json*
 
       This is the application's runtime dependencies file. It defines the .NET components and the libraries (including the dynamic link library that contains your application) needed to run the app. For more information, see [Runtime configuration files](https://github.com/dotnet/cli/blob/85ca206d84633d658d7363894c4ea9d59e515c1a/Documentation/specs/runtime-configuration-file.md).
 
-   * *HelloWorld.dll*
+   - *HelloWorld.dll*
 
       This is the [framework-dependent deployment](../deploying/deploy-with-cli.md#framework-dependent-deployment) version of the application. To execute this dynamic link library, enter `dotnet HelloWorld.dll` at a command prompt. This method of running the app works on any platform that has the .NET runtime installed.
 
-   * *HelloWorld.exe*
+   - *HelloWorld.exe*
 
       This is the [framework-dependent executable](../deploying/deploy-with-cli.md#framework-dependent-executable) version of the application. To run it, enter `HelloWorld.exe` at a command prompt. The file is operating-system-specific.
 
-   * *HelloWorld.pdb* (optional for deployment)
+   - *HelloWorld.pdb* (optional for deployment)
 
       This is the debug symbols file. You aren't required to deploy this file along with your application, although you should save it in the event that you need to debug the published version of your application.
 
-   * *HelloWorld.runtimeconfig.json*
+   - *HelloWorld.runtimeconfig.json*
 
       This is the application's runtime configuration file. It identifies the version of .NET that your application was built to run on. You can also add configuration options to it. For more information, see [.NET runtime configuration settings](../runtime-config/index.md#runtimeconfigjson).
 
@@ -176,23 +176,23 @@ In the following steps, you'll look at the files created by the publish process.
 
    As the image shows, the published output includes the following files:
 
-   * *HelloWorld.deps.json*
+   - *HelloWorld.deps.json*
 
       This is the application's runtime dependencies file. It defines the .NET components and the libraries (including the dynamic link library that contains your application) needed to run the app. For more information, see [Runtime configuration files](https://github.com/dotnet/cli/blob/85ca206d84633d658d7363894c4ea9d59e515c1a/Documentation/specs/runtime-configuration-file.md).
 
-   * *HelloWorld.dll*
+   - *HelloWorld.dll*
 
       This is the [framework-dependent deployment](../deploying/deploy-with-cli.md#framework-dependent-deployment) version of the application. To execute this dynamic link library, enter `dotnet HelloWorld.dll` at a command prompt. This method of running the app works on any platform that has the .NET runtime installed.
 
-   * *HelloWorld.exe*
+   - *HelloWorld.exe*
 
       This is the [framework-dependent executable](../deploying/deploy-with-cli.md#framework-dependent-executable) version of the application. To run it, enter `HelloWorld.exe` at a command prompt. The file is operating-system-specific.
 
-   * *HelloWorld.pdb* (optional for deployment)
+   - *HelloWorld.pdb* (optional for deployment)
 
       This is the debug symbols file. You aren't required to deploy this file along with your application, although you should save it in the event that you need to debug the published version of your application.
 
-   * *HelloWorld.runtimeconfig.json*
+   - *HelloWorld.runtimeconfig.json*
 
       This is the application's runtime configuration file. It identifies the version of .NET that your application was built to run on. You can also add configuration options to it. For more information, see [.NET runtime configuration settings](../runtime-config/index.md#runtimeconfigjson).
 
@@ -232,11 +232,5 @@ In this tutorial, you published a console app. In the next tutorial, you create 
 
 > [!div class="nextstepaction"]
 > [Create a .NET class library using Visual Studio](library-with-visual-studio.md)
-
-::: zone-end
-
-::: zone pivot="dotnet-core-3-1,dotnet-5-0"
-
-This tutorial is only available for .NET 5 and .NET 6. Select one of those options at the top of the page.
 
 ::: zone-end

@@ -1,9 +1,9 @@
 ---
 title: How to authenticate .NET applications with Azure services
 description: How to acquire the necessary credential objects to authenticate a .NET application with Azure services by using the Azure .NET SDK
-ms.date: 05/05/2022
 ms.topic: conceptual
-ms.custom: devx-track-dotnet
+ms.custom: devx-track-dotnet, engagement-fy23
+ms.date: 2/28/2023
 ---
 
 # How to authenticate .NET apps to Azure services using the .NET Azure SDK
@@ -35,7 +35,7 @@ Token-based authentication is strongly recommended over using connection strings
 - The token-based authentication methods described below allows you to establish the specific permissions needed by the app on the Azure resource. This follows the [principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege).  In contrast, a connection string grants full rights to the Azure resource.
 - Whereas anyone or any app with a connection string can connect to an Azure resource, token-based authentication methods scope access to the resource to only the app(s) intended to access the resource.  
 - In the case of a managed identity, there is no application secret to store.  This makes the app more secure because there's no connection string or application secret than can be compromised.
-- The [azure.identity](https://pypi.org/project/azure-identity/) package in the Azure SDK manages tokens for you behind the scenes. This makes using token based authentication as easy to use as a connection string.
+- The [Azure.Identity](https://www.nuget.org/packages/Azure.Identity) package in the Azure SDK manages tokens for you behind the scenes. This makes using token based authentication as easy to use as a connection string.
 
 Use of connection strings should be limited to initial proof of concept apps or development prototypes that don't access production or sensitive data.  Otherwise, the token-based authentication classes available in the Azure SDK should always be preferred when authenticating to Azure resources.
 
@@ -65,9 +65,7 @@ When an application is run on a developer's workstation during local development
 
 Internally, `DefaultAzureCredential` implements a chain of credential providers for authenticating applications to Azure resources.  Each credential provider is able to detect if credentials of that type are configured for the app.  `DefaultAzureCredential` sequentially checks each provider in order and uses the credentials from the first provider that has credentials configured.
 
-The order in which `DefaultAzureCredential` looks for credentials is shown in the diagram and table below.  
-
-:::image type="content" source="./media/authentication-defaultazurecredential.png" alt-text="A diagram showing the `DefaultAzureCredential` sequence checks to see what authentication source is configured for an application." lightbox="./media/default-azure-credential-sequence-diagram.png":::
+The order and locations in which `DefaultAzureCredential` looks for credentials is found at [DefaultAzureCredential](/dotnet/api/overview/azure/identity-readme?view=azure-dotnet&preserve-view=true#defaultazurecredential).
 
 | Credential type               | Description |
 |-------------------------------|-------------|

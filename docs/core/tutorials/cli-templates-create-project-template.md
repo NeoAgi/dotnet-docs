@@ -12,8 +12,6 @@ recommendations: false
 
 With .NET, you can create and deploy templates that generate projects, files, even resources. This tutorial is part two of a series that teaches you how to create, install, and uninstall, templates for use with the `dotnet new` command.
 
-You can view the completed template in the [.NET Samples GitHub repository](https://github.com/dotnet/samples/tree/main/core/tutorials/cli-templates-create-item-template).
-
 > [!TIP]
 > The official .NET templates that are shipped with the .NET SDK can be found in the following repositories:
 >
@@ -44,6 +42,8 @@ In this part of the series you'll learn how to:
 * Complete [part 1](cli-templates-create-item-template.md) of this tutorial series.
 * Open a terminal and navigate to the _working\templates_ folder.
 
+[!INCLUDE [dotnet6-syntax-note](includes/dotnet6-syntax-note.md)]
+
 ## Create a project template
 
 Project templates produce ready-to-run projects that make it easy for users to start with a working set of code. .NET includes a few project templates such as a console application or a class library. In this example, you'll create a new console project that replaces the standard "Hello World" console output with one that runs asynchronously.
@@ -60,7 +60,7 @@ working
 
 ## Modify Program.cs
 
-Open up the _program.cs_ file. The standard console project doesn't asynchronously write to the console output, so let's add that. Change the code to the following and save the file:
+Open up the _Program.cs_ file. The standard console project doesn't asynchronously write to the console output, so let's add that. Change the code to the following and save the file:
 
 ```csharp
 await Console.Out.WriteAsync("Hello World with C#");

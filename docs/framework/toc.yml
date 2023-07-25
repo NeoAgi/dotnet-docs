@@ -644,6 +644,8 @@ items:
       href: additional-apis/datamemberfieldeditor-class.md
     - name: DataMemberListEditor class
       href: additional-apis/datamemberlisteditor-class.md
+    - name: StringCollectionEditor class
+      href: additional-apis/system-windows-forms/stringcollectioneditor-class.md
   - name: System.Windows.Xps
     items:
     - name: XpsDocumentWriter class
@@ -877,9 +879,11 @@ items:
     href: whats-new/index.md
   - name: What's new in accessibility
     href: whats-new/whats-new-in-accessibility.md
-  - name: What's obsolete in API ref
-    href: whats-new/whats-obsolete.md
+  - name: Obsolete APIs
     items:
+    - name: Overview
+      href: whats-new/whats-obsolete.md
+      displayName: obsoletions
     - name: Obsolete types
       href: whats-new/obsolete-types.md
     - name: Obsolete members

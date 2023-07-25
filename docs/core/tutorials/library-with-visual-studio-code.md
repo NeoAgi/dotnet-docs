@@ -140,7 +140,7 @@ Add a console application that uses the class library. The app will prompt the u
    ```output
    The template "Console Application" was created successfully.
    Processing post-creation actions...
-   Running 'dotnet restore' on ShowCase\ShowCase.csproj...  
+   Running 'dotnet restore' on ShowCase\ShowCase.csproj...
      Determining projects to restore...
      Restored C:\Projects\ClassLibraryProjects\ShowCase\ShowCase.csproj (in 210 ms).
    Restore succeeded.
@@ -355,7 +355,7 @@ Add a console application that uses the class library. The app will prompt the u
    ```output
    The template "Console Application" was created successfully.
    Processing post-creation actions...
-   Running 'dotnet restore' on ShowCase\ShowCase.csproj...  
+   Running 'dotnet restore' on ShowCase\ShowCase.csproj...
      Determining projects to restore...
      Restored C:\Projects\ClassLibraryProjects\ShowCase\ShowCase.csproj (in 210 ms).
    Restore succeeded.
@@ -434,11 +434,5 @@ In this tutorial, you created a solution, added a library project, and added a c
 
 > [!div class="nextstepaction"]
 > [Test a .NET class library with .NET using Visual Studio Code](testing-library-with-visual-studio-code.md)
-
-::: zone-end
-
-::: zone pivot="dotnet-core-3-1,dotnet-5-0"
-
-This tutorial is only available for .NET 6 and .NET 7. Select one of those options at the top of the page.
 
 ::: zone-end

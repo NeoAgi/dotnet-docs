@@ -1,7 +1,7 @@
 ---
 description: "Learn more about: .NET globalization and ICU"
 title: "Globalization and ICU"
-ms.date: 11/14/2022
+ms.date: 03/13/2023
 helpviewer_keywords:
   - "globalization [.NET], about globalization"
   - "global applications, globalization"
@@ -56,6 +56,21 @@ By default, <xref:System.String.IndexOf(System.String)?displayProperty=nameWithT
 You can run code analysis rules [CA1307: Specify StringComparison for clarity](../../fundamentals/code-analysis/quality-rules/ca1307.md) and [CA1309: Use ordinal StringComparison](../../fundamentals/code-analysis/quality-rules/ca1309.md) to find call sites in your code where the string comparison isn't specified or it is not ordinal.
 
 For more information, see [Behavior changes when comparing strings on .NET 5+](../../standard/base-types/string-comparison-net-5-plus.md).
+
+#### TimeZoneInfo.FindSystemTimeZoneById
+
+ICU provides the flexibility to create <xref:System.TimeZoneInfo> instances using [IANA](https://www.iana.org/time-zones) time zone IDs, even when the application is running on Windows. Similarly, you can create <xref:System.TimeZoneInfo> instances with Windows time zone IDs, even when running on non-Windows platforms. However, it's important to note that this functionality isn't available when using [NLS mode](#use-nls-instead-of-icu) or [globalization invariant mode](https://github.com/dotnet/runtime/blob/main/docs/design/features/globalization-invariant-mode.md).
+
+#### ICU dependent APIs
+
+.NET introduced APIs that are dependent on ICU. These APIs can succeed only when using ICU. Here are some examples:
+
+- <xref:System.TimeZoneInfo.TryConvertIanaIdToWindowsId(System.String,System.String@)>
+- <xref:System.TimeZoneInfo.TryConvertWindowsIdToIanaId%2A>
+
+On Windows 10 May 2019 Update or any later versions, the mentioned APIs will consistently succeed. However, on older versions of Windows, these APIs will consistently fail. In such cases, you can enable the [app-local ICU](#app-local-icu) feature to ensure the success of these APIs. On non-Windows platforms, these APIs will always succeed regardless of the version.
+
+In addition, it's crucial for apps to ensure that they're not running in [globalization invariant mode](https://github.com/dotnet/runtime/blob/main/docs/design/features/globalization-invariant-mode.md) or [NLS mode](#use-nls-instead-of-icu) to guarantee the success of these APIs.
 
 ### Use NLS instead of ICU
 
@@ -149,8 +164,8 @@ For framework-dependent apps (not self-contained) where ICU is consumed from a l
 ```xml
 <ItemGroup>
   <IcuAssemblies Include="icu\*.so*" />
-  <RuntimeTargetsCopyLocalItems Include="@(IcuAssemblies)" AssetType="native" CopyLocal="true" 
-    DestinationSubDirectory="runtimes/linux-x64/native/" DestinationSubPath="%(FileName)%(Extension)" 
+  <RuntimeTargetsCopyLocalItems Include="@(IcuAssemblies)" AssetType="native" CopyLocal="true"
+    DestinationSubDirectory="runtimes/linux-x64/native/" DestinationSubPath="%(FileName)%(Extension)"
     RuntimeIdentifier="linux-x64" NuGetPackageId="System.Private.Runtime.UnicodeData" />
 </ItemGroup>
 ```
@@ -208,4 +223,4 @@ The following APIs are supported with limitations:
 - <xref:System.String.Normalize(System.Text.NormalizationForm)?displayProperty=nameWithType> and <xref:System.String.IsNormalized(System.Text.NormalizationForm)?displayProperty=nameWithType> don't support the rarely used <xref:System.Text.NormalizationForm.FormKC> and <xref:System.Text.NormalizationForm.FormKD> forms.
 - <xref:System.Globalization.RegionInfo.CurrencyNativeName?displayProperty=nameWithType> returns the same value as <xref:System.Globalization.RegionInfo.CurrencyEnglishName?displayProperty=nameWithType>.
 
-In addition, a list of supported locales can be found on the [dotnet/icu repo](https://github.com/dotnet/icu/blob/0f49268ddfd3331ca090f1c51d2baa2f75f6c6c0/icu-filters/optimal.json#L6-L54).
+In addition, fewer locales are supported. The supported list can be found in the [dotnet/icu repo](https://github.com/dotnet/icu/blob/dotnet/main/icu-filters/icudt_wasm.json#L7-L195).

@@ -371,9 +371,3 @@ In this tutorial, you used Visual Studio debugging tools. In the next tutorial, 
 > [Publish a .NET console application using Visual Studio](publishing-with-visual-studio.md)
 
 ::: zone-end
-
-::: zone pivot="dotnet-core-3-1,dotnet-5-0"
-
-This tutorial is only available for .NET 6 and .NET 7. Select one of those options at the top of the page.
-
-::: zone-end
